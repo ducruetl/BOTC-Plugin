@@ -1,0 +1,4 @@
+name: BOTC-Plugin
+version: '1.0-SNAPSHOT'
+main: fr.ducruetl.BOTCPlugin.BOTCPlugin
+api-version: '1.21'
