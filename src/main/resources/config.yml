@@ -1,0 +1,4 @@
+timers:
+  freeTimeDuration: 60
+  meetingTimeDuration: 60
+  nightTimeDuration: 10

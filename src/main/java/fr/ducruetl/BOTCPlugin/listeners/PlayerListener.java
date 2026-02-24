@@ -2,6 +2,7 @@ package fr.ducruetl.BOTCPlugin.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +36,9 @@ public class PlayerListener implements Listener {
         player.setInvulnerable(true);
         player.setGameMode(GameMode.ADVENTURE);
         player.teleport(player.getWorld().getSpawnLocation());
+
+        BossBar timeBar = plugin.getTimerBar();
+        timeBar.addPlayer(player);
     }
 
     @EventHandler
