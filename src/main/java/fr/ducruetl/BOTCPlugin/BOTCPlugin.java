@@ -1,13 +1,16 @@
 package fr.ducruetl.BOTCPlugin;
 
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
 import fr.ducruetl.BOTCPlugin.listeners.PlayerListener;
+import fr.ducruetl.BOTCPlugin.listeners.WorldListner;
 
 public final class BOTCPlugin extends JavaPlugin {
 
@@ -23,8 +26,12 @@ public final class BOTCPlugin extends JavaPlugin {
             getServer().getScoreboardManager().getMainScoreboard().registerNewTeam(NAMETAG_TEAM_NAME);
         }
 
+        getServer().setDefaultGameMode(GameMode.ADVENTURE);
+
         // Register listeners classes
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerListener(this), this);
+        pluginManager.registerEvents(new WorldListner(), this);
     }
 
     @Override
@@ -35,7 +42,6 @@ public final class BOTCPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (label.contentEquals("nametags")) {
             if (args.length != 1) {
                 return false;

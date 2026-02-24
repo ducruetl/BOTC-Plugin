@@ -28,6 +28,8 @@ public class PlayerListener implements Listener {
         if (!nametagTeam.hasEntry(playerName)) {
             nametagTeam.addEntry(playerName);
         }
+
+        event.getPlayer().setInvulnerable(true);
     }
 
     @EventHandler
