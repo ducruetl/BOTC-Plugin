@@ -1,6 +1,8 @@
 package fr.ducruetl.BOTCPlugin.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,7 +21,8 @@ public class PlayerListener implements Listener {
     
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String playerName = event.getPlayer().getName();
+        Player player = event.getPlayer();
+        String playerName = player.getName();
         event.setJoinMessage(ChatColor.GREEN + "" + ChatColor.BOLD + playerName 
                             + ChatColor.RESET + ChatColor.GREEN + " entre dans le village.");
 
@@ -29,7 +32,9 @@ public class PlayerListener implements Listener {
             nametagTeam.addEntry(playerName);
         }
 
-        event.getPlayer().setInvulnerable(true);
+        player.setInvulnerable(true);
+        player.setGameMode(GameMode.ADVENTURE);
+        player.teleport(player.getWorld().getSpawnLocation());
     }
 
     @EventHandler

@@ -1,6 +1,7 @@
 package fr.ducruetl.BOTCPlugin;
 
-import org.bukkit.GameMode;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -10,7 +11,6 @@ import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
 import fr.ducruetl.BOTCPlugin.listeners.PlayerListener;
-import fr.ducruetl.BOTCPlugin.listeners.WorldListner;
 
 public final class BOTCPlugin extends JavaPlugin {
 
@@ -26,12 +26,15 @@ public final class BOTCPlugin extends JavaPlugin {
             getServer().getScoreboardManager().getMainScoreboard().registerNewTeam(NAMETAG_TEAM_NAME);
         }
 
-        getServer().setDefaultGameMode(GameMode.ADVENTURE);
+        for (World world : getServer().getWorlds()) {
+            world.setDifficulty(Difficulty.PEACEFUL);
+            world.setPVP(false);
+            world.setSpawnLocation(0, world.getHighestBlockYAt(0, 0) + 1, 0);
+        }
 
         // Register listeners classes
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerListener(this), this);
-        pluginManager.registerEvents(new WorldListner(), this);
     }
 
     @Override
