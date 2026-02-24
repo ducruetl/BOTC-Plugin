@@ -2,3 +2,14 @@ name: BOTC-Plugin
 version: '1.0-SNAPSHOT'
 main: fr.ducruetl.BOTCPlugin.BOTCPlugin
 api-version: '1.21'
+commands:
+  nametags:
+    description: Show or hide nametags
+    usage: "Usage: /nametags <enable|disable>"
+    permission: botc.nametags
+    permission-message: "You do not have permission to use this command."
+
+permissions:
+  botc.nametags:
+    description: Allows use of /nametags
+    default: op
