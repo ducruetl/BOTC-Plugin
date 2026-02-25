@@ -1,0 +1,89 @@
+package fr.ducruetl.BOTCPlugin.models;
+
+import org.bukkit.entity.Player;
+
+import fr.ducruetl.BOTCPlugin.models.roles.Role;
+
+public class GamePlayer {
+
+    private Player player;
+
+    private Role role;
+
+    private Role facadeRole;
+
+    private Team facadeTeam;
+
+    private boolean isDead;
+
+    private boolean hasVotedAfterDeath;
+
+    private boolean hasUsedSlayerPower;
+
+    public GamePlayer(Player player) {
+        this.player = player;
+        this.role = null;
+        this.facadeRole = null;
+        this.facadeTeam = null;
+        this.isDead = false;
+        this.hasVotedAfterDeath = false;
+        this.hasUsedSlayerPower = false;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getFacadeRole() {
+        return facadeRole;
+    }
+
+    public void setFacadeRole(Role facadeRole) {
+        this.facadeRole = facadeRole;
+    }
+
+    public Team getFacadeTeam() {
+        return facadeTeam;
+    }
+
+    public void setFacadeTeam(Team facadeTeam) {
+        this.facadeTeam = facadeTeam;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean isDead) {
+        this.isDead = isDead;
+    }
+
+    public boolean isHasVotedAfterDeath() {
+        return hasVotedAfterDeath;
+    }
+
+    public void setHasVotedAfterDeath(boolean hasVotedAfterDeath) {
+        this.hasVotedAfterDeath = hasVotedAfterDeath;
+    }
+
+    public boolean isHasUsedSlayerPower() {
+        return hasUsedSlayerPower;
+    }
+
+    public void setHasUsedSlayerPower(boolean hasUsedSlayerPower) {
+        this.hasUsedSlayerPower = hasUsedSlayerPower;
+    }
+    
+}
