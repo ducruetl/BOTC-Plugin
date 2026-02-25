@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Team;
 
 import fr.ducruetl.BOTCPlugin.commands.NametagCommand;
+import fr.ducruetl.BOTCPlugin.listeners.InventoryListener;
 import fr.ducruetl.BOTCPlugin.listeners.PlayerListener;
 
 public final class BOTCPlugin extends JavaPlugin {
@@ -37,6 +38,7 @@ public final class BOTCPlugin extends JavaPlugin {
         // Register listeners classes
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerListener(this), this);
+        pluginManager.registerEvents(new InventoryListener(), this);
         
         // Register commands executors
         getCommand("nametags").setExecutor(new NametagCommand(this));

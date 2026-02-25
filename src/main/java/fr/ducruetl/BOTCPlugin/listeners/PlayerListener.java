@@ -6,11 +6,14 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
+import fr.ducruetl.BOTCPlugin.items.CustomItems;
 
 public class PlayerListener implements Listener {
 
@@ -39,6 +42,10 @@ public class PlayerListener implements Listener {
 
         BossBar timeBar = plugin.getTimerBar();
         timeBar.addPlayer(player);
+
+        if (player.isOp()) {
+            player.getInventory().setItem(8, CustomItems.getConfigItem());
+        }
     }
 
     @EventHandler
@@ -46,6 +53,18 @@ public class PlayerListener implements Listener {
         String playerName = event.getPlayer().getName();
         event.setQuitMessage(ChatColor.RED + "" + ChatColor.BOLD + playerName 
                             + ChatColor.RESET + ChatColor.RED + " quitte le village. :(");
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        if (item == null) {
+            return;
+        }
+
+        CustomItems.handleCustomItem(event, player, item);
     }
     
 }
