@@ -1,5 +1,7 @@
 package fr.ducruetl.BOTCPlugin.models.roles.demons;
 
+import fr.ducruetl.BOTCPlugin.models.Game;
+import fr.ducruetl.BOTCPlugin.models.GamePlayer;
 import fr.ducruetl.BOTCPlugin.models.Team;
 import fr.ducruetl.BOTCPlugin.models.roles.Role;
 
@@ -14,8 +16,14 @@ public class Imp extends Role {
             + "rôle de diablotin à un de tes sbires démons. "
             + "Si tu meurt lors du vote du village, les Citoyens "
             + "gagnent (sauf si il y a une Femme Ecarlate).", 
-            Team.DEMON
+            Team.DEMON,
+            3
         );
+    }
+
+    @Override
+    public void onNightTurn(Game game, GamePlayer player) {
+        game.processNextNightAction();
     }
     
 }

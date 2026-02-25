@@ -64,7 +64,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        CustomItems.handleCustomItem(event, player, item);
+        CustomItems.handleCustomItem(plugin, event, player, item);
     }
     
 }

@@ -5,10 +5,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.models.roles.Role;
 import fr.ducruetl.BOTCPlugin.models.roles.demons.Imp;
 import fr.ducruetl.BOTCPlugin.models.roles.demons.Poisoner;
@@ -31,30 +36,41 @@ import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Butler;
 import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Drunk;
 import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Recluse;
 import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Saint;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 public class Game {
+
+    private BOTCPlugin plugin;
     
     private ArrayList<GamePlayer> players;
+
+    private Queue<GamePlayer> nightOrder;
+
+    private GamePlayer currentNightActor;
+
+    private ArrayList<Role> composition;
+
+    // To keep track of the composition and show it at the end
+    private Map<GamePlayer, Role> roleAttributionMap;
 
     private int day;
 
     private GameState state;
 
-    private List<Role> minionPool = List.of(
+    private List<Role> minionPool = new ArrayList<>(List.of(
         new Poisoner(),
         new ScarletWoman(),
         new Spy()
-    );
+    ));
 
-    private List<Role> outsidersPool = List.of(
+    private List<Role> outsidersPool = new ArrayList<>(List.of(
         new Butler(),
         new Drunk(),
         new Saint(),
         new Recluse()
-    );
+    ));
 
-    private List<Role> folkstownPool = List.of(
+    private List<Role> folkstownPool = new ArrayList<>(List.of(
         new Chef(),
         new Empath(),
         new FortuneTeller(),
@@ -68,20 +84,28 @@ public class Game {
         new Undertaker(),
         new Virgin(),
         new Washerwoman()
-    );
+    ));
 
-    // To keep track of the composition and show it at the end
-    private Map<GamePlayer, Role> roleAttributionMap;
-
-    public Game() {
+    public Game(BOTCPlugin plugin) {
+        this.plugin = plugin;
         this.players = new ArrayList<>();
+        this.nightOrder = new PriorityQueue<>();
+        this.composition = new ArrayList<>();
         this.day = 1;
         this.state = GameState.NIGHT;
         this.roleAttributionMap = new HashMap<>();
     }
 
+    public BOTCPlugin getPlugin() {
+        return plugin;
+    }
+
     public ArrayList<GamePlayer> getPlayers() {
         return players;
+    }
+
+    public ArrayList<Role> getComposition() {
+        return composition;
     }
 
     public int getDay() {
@@ -117,40 +141,37 @@ public class Game {
             getPlayers().add(new GamePlayer(player));
         }
 
-        attributeRoles();
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Début de la partie !");
 
-        // TODO: Start timer to start the game (move the timer from BOTCPlugin here)
+        attributeRoles();
+        nextNight();
     }
 
-    public void attributeRoles() {
-        List<Role> composition = new ArrayList<>();
-
-        Collections.shuffle(minionPool);
-        Collections.shuffle(outsidersPool);
-        Collections.shuffle(folkstownPool);
-
-        composition.add(new Imp());
-
-        for (int i = 0; i < getMinionsCount(); i++) {
-            composition.add(minionPool.get(i));
+    public void nextNight() {
+        setState(GameState.NIGHT);
+        Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "La nuit tombe...");
+        
+        PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 1);
+        for (GamePlayer player : getPlayers()) {
+            player.getPlayer().addPotionEffect(blindness);
         }
 
-        for (int i = 0; i < getOutsidersCount(); i++) {
-            composition.add(outsidersPool.get(i));
+        processNextNightAction();
+    }
+
+    public void processNextNightAction() {
+        if (nightOrder.isEmpty()) {
+            endNight();
+            return;
         }
 
-        for (int i = 0; i < getFolkstownCount(); i++) {
-            composition.add(folkstownPool.get(i));
-        }
+        currentNightActor = nightOrder.poll();
+        currentNightActor.getRole().onNightTurn(this, currentNightActor);
+    }
 
-        Collections.shuffle(composition);
-
-        for (int i = 0; i < getPlayers().size(); i++) {
-            GamePlayer player = getPlayers().get(i);
-
-            player.setRole(composition.get(i));
-            getRoleAttributionMap().put(player, player.getRole());
-        }
+    public void endNight() {
+        setState(GameState.DAY);
+        Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "Fin de la nuit !");
     }
 
     public int getFolkstownCount() {
@@ -169,6 +190,59 @@ public class Game {
         int playersCount = getPlayers().size();
 
         return (playersCount - 1) % 3;
+    }
+
+        public void attributeRoles() {
+        Collections.shuffle(minionPool);
+        Collections.shuffle(outsidersPool);
+        Collections.shuffle(folkstownPool);
+
+        getComposition().add(new Imp());
+
+        for (int i = 0; i < getMinionsCount(); i++) {
+            getComposition().add(minionPool.get(i));
+        }
+
+        for (int i = 0; i < getOutsidersCount(); i++) {
+            getComposition().add(outsidersPool.get(i));
+        }
+
+        for (int i = 0; i < getFolkstownCount(); i++) {
+            getComposition().add(folkstownPool.get(i));
+        }
+
+        Collections.shuffle(getComposition());
+
+        for (int i = 0; i < getPlayers().size(); i++) {
+            GamePlayer player = getPlayers().get(i);
+
+            player.setRole(getComposition().get(i));
+            getRoleAttributionMap().put(player, player.getRole());
+
+            sendRoleMessage(player);
+        }
+    }
+
+    public void sendRoleMessage(GamePlayer player) {
+        player.getPlayer().sendMessage("");
+        player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + player.getRole().getName());
+        
+        if (player.getRole().getTeam() == Team.DEMON 
+                || player.getRole().getTeam() == Team.MINION) {
+            player.getPlayer().sendMessage(ChatColor.BLUE + "Vous appartenez au camp des " + ChatColor.RED + "" + ChatColor.BOLD + "Démons");
+        } else {
+            player.getPlayer().sendMessage(ChatColor.BLUE + "Vous appartenez au camp des " + ChatColor.GREEN + "" + ChatColor.BOLD + "Citoyens");
+        }
+
+        player.getPlayer().sendMessage(ChatColor.BLUE + player.getRole().getDescription());
+        player.getPlayer().sendMessage("");
+    }
+
+    public void broadcastPlayersRoles() {
+        for (GamePlayer player : getRoleAttributionMap().keySet()) {
+            Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + player.getPlayer().getDisplayName()
+                + ChatColor.RESET + ChatColor.DARK_PURPLE + " : " + getRoleAttributionMap().get(player).getName());
+        }
     }
 
 }

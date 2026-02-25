@@ -38,7 +38,7 @@ public final class BOTCPlugin extends JavaPlugin {
         // Register listeners classes
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerListener(this), this);
-        pluginManager.registerEvents(new InventoryListener(), this);
+        pluginManager.registerEvents(new InventoryListener(this), this);
         
         // Register commands executors
         getCommand("nametags").setExecutor(new NametagCommand(this));

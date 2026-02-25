@@ -1,5 +1,7 @@
 package fr.ducruetl.BOTCPlugin.models.roles.outsiders;
 
+import fr.ducruetl.BOTCPlugin.models.Game;
+import fr.ducruetl.BOTCPlugin.models.GamePlayer;
 import fr.ducruetl.BOTCPlugin.models.Team;
 import fr.ducruetl.BOTCPlugin.models.roles.Role;
 
@@ -12,8 +14,14 @@ public class Drunk extends Role {
             + "un rôle t'es assigné mais tu n'auras pas ses pouvoirs, "
             + "si ton rôle attribué est censé recevoir des informations, "
             + "tu recevra des informations aléatoires.",
-            Team.OUTSIDER
+            Team.OUTSIDER,
+            2
         );
+    }
+
+    @Override
+    public void onNightTurn(Game game, GamePlayer player) {
+        game.processNextNightAction();
     }
     
 }

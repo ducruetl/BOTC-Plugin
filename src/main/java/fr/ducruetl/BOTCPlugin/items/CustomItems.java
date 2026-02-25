@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.models.Game;
 import net.md_5.bungee.api.ChatColor;
 
@@ -53,7 +54,7 @@ public class CustomItems {
         return startGameItem;
     }
 
-    public static void handleCustomItem(Cancellable event, Player player, ItemStack item) {
+    public static void handleCustomItem(BOTCPlugin plugin, Cancellable event, Player player, ItemStack item) {
         if (item.equals(getConfigItem())) {
             // Configuration main menu
             event.setCancelled(true);
@@ -77,7 +78,7 @@ public class CustomItems {
         } else if (item.equals(getStartGameItem())) {
             // Start game
             event.setCancelled(true);
-            Game game = new Game();
+            Game game = new Game(plugin);
             game.startGame();
         }
     }
