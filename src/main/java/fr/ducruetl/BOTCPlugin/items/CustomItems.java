@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import fr.ducruetl.BOTCPlugin.models.Game;
 import net.md_5.bungee.api.ChatColor;
 
 public class CustomItems {
@@ -76,6 +77,8 @@ public class CustomItems {
         } else if (item.equals(getStartGameItem())) {
             // Start game
             event.setCancelled(true);
+            Game game = new Game();
+            game.startGame();
         }
     }
 
