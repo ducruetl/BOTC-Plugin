@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
@@ -42,7 +41,6 @@ import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Saint;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 
 public class Game {
 
@@ -170,26 +168,6 @@ public class Game {
         return nightOrder;
     }
 
-    /*
-    public void sortNightOrder() {
-        List<GamePlayer> sorted = new ArrayList<>(nightOrder);
-
-        sorted.sort(Comparator.comparingInt(gp -> {
-
-            Role role = gp.getRole();
-
-            if (role instanceof Drunk) {
-                return gp.getFacadeRole().getNightPriority();
-            }
-
-            return role.getNightPriority();
-        }));
-
-        nightOrder.clear();
-        nightOrder.addAll(sorted);
-    }
-        */
-
     public GamePlayer getCurrentNightActor() {
         return currentNightActor;
     }
@@ -203,7 +181,7 @@ public class Game {
     }
 
     public void setSelectedPlayer(GamePlayer selectedPlayer) {
-        Bukkit.getLogger().info("Nouveau joueur selectionné");
+        Bukkit.getLogger().info(selectedPlayer.getPlayer().getDisplayName() + " selectionné");
         this.selectedPlayer = selectedPlayer;
     }
 
@@ -322,8 +300,6 @@ public class Game {
 
             sendRoleMessage(player);
         }
-
-        //sortNightOrder();
     }
 
     public void sendRoleMessage(GamePlayer player) {
@@ -361,13 +337,6 @@ public class Game {
 
             meta.setOwningPlayer(target.getPlayer());
             meta.setDisplayName(ChatColor.YELLOW + target.getPlayer().getName());
-
-            // Store UUID in persistent data container (important for later retrieval)
-            meta.getPersistentDataContainer().set(
-                    new NamespacedKey(plugin, "target_uuid"),
-                    PersistentDataType.STRING,
-                    target.getPlayer().getUniqueId().toString()
-            );
 
             head.setItemMeta(meta);
             inv.addItem(head);

@@ -1,12 +1,11 @@
 package fr.ducruetl.BOTCPlugin.gameobjects.roles.demons;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import fr.ducruetl.BOTCPlugin.gameobjects.Game;
 import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
@@ -39,21 +38,27 @@ public class Imp extends Role {
         player.getPlayer().closeInventory();
         player.getPlayer().openInventory(playerSelectInventory);
 
-        BukkitTask timer = game.getPlugin().startTimer(
-            "Votre tour", 
-            game.getPlugin().getConfig().getInt("timers.nightTimeDuration"),
-            new ArrayList<GamePlayer>(Arrays.asList(player))
-        );
-        
+        BossBar timerBar = Bukkit.getServer().createBossBar("Votre tour", BarColor.BLUE, BarStyle.SOLID);
+        timerBar.setProgress(1.0);  
+        timerBar.addPlayer(player.getPlayer());
+        timerBar.setVisible(true);
+
         new BukkitRunnable() {
-            double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
+            double totalTimeInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
+            double timeRemainingInSeconds = totalTimeInSeconds;
 
             @Override
             public void run() {
+                int minutesRemaining = (int) Math.floor((int) timeRemainingInSeconds / 60);
+                int secondsRemaining = (int) timeRemainingInSeconds % 60;
+
+                timerBar.setTitle("Votre tour " + minutesRemaining + ":" + secondsRemaining);
+                timerBar.setProgress(timeRemainingInSeconds/totalTimeInSeconds);
+
                 if (timeRemainingInSeconds <= 0 || game.getSelectedPlayer() != null) {
                     this.cancel();
-                    timer.cancel();
                     player.getPlayer().closeInventory();
+                    timerBar.removeAll();
 
                     GamePlayer selectedPlayer = game.getSelectedPlayer();
                     if (selectedPlayer != null 
