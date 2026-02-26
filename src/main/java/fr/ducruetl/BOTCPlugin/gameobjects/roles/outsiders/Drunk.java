@@ -1,8 +1,5 @@
 package fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders;
 
-import fr.ducruetl.BOTCPlugin.gameobjects.Game;
-import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
-import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
 import fr.ducruetl.BOTCPlugin.gameobjects.Team;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
 
@@ -16,13 +13,7 @@ public class Drunk extends Role {
             + "si ton rôle attribué est censé recevoir des informations, "
             + "tu recevra des informations aléatoires.",
             Team.OUTSIDER,
-            2
+            0
         );
     }
-
-    @Override
-    public void onNightTurn(Game game, GamePlayer player) {
-        NightActions.processNextNightAction(game);
-    }
-    
 }

@@ -6,10 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.Game;
+import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
+
 import org.bukkit.ChatColor;
 
 public class CustomItems {
@@ -54,6 +58,32 @@ public class CustomItems {
         return startGameItem;
     }
 
+    public static ItemStack getRolesBook(Game game) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta meta = (BookMeta) book.getItemMeta();
+
+        meta.setTitle("Night Information");
+        meta.setAuthor("Game");
+
+        String rolesString = "";
+
+        for (GamePlayer player : game.getPlayers()) {
+            rolesString += player.getPlayer().getDisplayName();
+            rolesString += " : ";
+            if (player.getRole() instanceof Drunk) {
+                rolesString += player.getFacadeRole().getName();
+            } else {
+                rolesString += player.getRole().getName();
+            }
+            rolesString += "\n";
+        }
+
+        meta.addPage(rolesString);
+        book.setItemMeta(meta);
+
+        return book;
+    }
+
     public static void handleCustomItem(BOTCPlugin plugin, Cancellable event, Player player, ItemStack item) {
         if (item.equals(getConfigItem())) {
             // Configuration main menu
@@ -78,8 +108,8 @@ public class CustomItems {
         } else if (item.equals(getStartGameItem())) {
             // Start game
             event.setCancelled(true);
-            Game game = new Game(plugin);
-            game.startGame();
+            plugin.setGame(new Game(plugin));
+            plugin.getGame().startGame();
         }
     }
 

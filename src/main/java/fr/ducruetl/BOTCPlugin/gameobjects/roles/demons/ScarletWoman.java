@@ -1,8 +1,5 @@
 package fr.ducruetl.BOTCPlugin.gameobjects.roles.demons;
 
-import fr.ducruetl.BOTCPlugin.gameobjects.Game;
-import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
-import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
 import fr.ducruetl.BOTCPlugin.gameobjects.Team;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
 
@@ -16,11 +13,6 @@ public class ScarletWoman extends Role {
             Team.MINION,
             0
         );
-    }
-
-    @Override
-    public void onNightTurn(Game game, GamePlayer player) {
-        NightActions.processNextNightAction(game);
     }
     
 }

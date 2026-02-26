@@ -2,6 +2,7 @@ package fr.ducruetl.BOTCPlugin.gameobjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,10 @@ import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
@@ -36,6 +41,8 @@ import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Recluse;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Saint;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 
 public class Game {
 
@@ -43,9 +50,19 @@ public class Game {
     
     private ArrayList<GamePlayer> players;
 
+    private Map<Player, GamePlayer> playersToGamePlayers;
+
     private Queue<GamePlayer> nightOrder;
 
     private GamePlayer currentNightActor;
+
+    private GamePlayer selectedPlayer;
+
+    private GamePlayer lastKilled;
+
+    private GamePlayer lastPoisoned;
+
+    private GamePlayer lastProtected;
 
     private ArrayList<Role> composition;
 
@@ -90,10 +107,22 @@ public class Game {
     public Game(BOTCPlugin plugin) {
         this.plugin = plugin;
         this.players = new ArrayList<>();
-        this.nightOrder = new PriorityQueue<>();
+        this.playersToGamePlayers = new HashMap<>();
+        this.nightOrder = new PriorityQueue<>(
+            Comparator.comparingInt(gp -> {
+                Role role = gp.getRole();
+
+                if (role instanceof Drunk) {
+                    return gp.getFacadeRole().getNightPriority();
+                }
+
+                return role.getNightPriority();
+            })
+        );
         this.composition = new ArrayList<>();
+        this.outOfComposition = new ArrayList<>();
         this.day = 1;
-        this.state = GameState.NIGHT;
+        this.state = GameState.NOT_STARTED;
         this.roleAttributionMap = new HashMap<>();
     }
 
@@ -103,6 +132,10 @@ public class Game {
 
     public ArrayList<GamePlayer> getPlayers() {
         return players;
+    }
+
+    public Map<Player, GamePlayer> getPlayersToGamePlayers() {
+        return playersToGamePlayers;
     }
 
     public ArrayList<Role> getComposition() {
@@ -137,12 +170,65 @@ public class Game {
         return nightOrder;
     }
 
+    /*
+    public void sortNightOrder() {
+        List<GamePlayer> sorted = new ArrayList<>(nightOrder);
+
+        sorted.sort(Comparator.comparingInt(gp -> {
+
+            Role role = gp.getRole();
+
+            if (role instanceof Drunk) {
+                return gp.getFacadeRole().getNightPriority();
+            }
+
+            return role.getNightPriority();
+        }));
+
+        nightOrder.clear();
+        nightOrder.addAll(sorted);
+    }
+        */
+
     public GamePlayer getCurrentNightActor() {
         return currentNightActor;
     }
 
     public void setCurrentNightActor(GamePlayer currentNightActor) {
         this.currentNightActor = currentNightActor;
+    }
+
+    public GamePlayer getSelectedPlayer() {
+        return selectedPlayer;
+    }
+
+    public void setSelectedPlayer(GamePlayer selectedPlayer) {
+        Bukkit.getLogger().info("Nouveau joueur selectionné");
+        this.selectedPlayer = selectedPlayer;
+    }
+
+    public GamePlayer getLastKilled() {
+        return lastKilled;
+    }
+
+    public void setLastKilled(GamePlayer lastKilled) {
+        this.lastKilled = lastKilled;
+    }
+
+    public GamePlayer getLastPoisoned() {
+        return lastPoisoned;
+    }
+
+    public void setLastPoisoned(GamePlayer lastPoisoned) {
+        this.lastPoisoned = lastPoisoned;
+    }
+
+    public GamePlayer getLastProtected() {
+        return lastProtected;
+    }
+
+    public void setLastProtected(GamePlayer lastProtected) {
+        this.lastProtected = lastProtected;
     }
 
     public void startGame() {
@@ -155,7 +241,9 @@ public class Game {
         }
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            getPlayers().add(new GamePlayer(player));
+            GamePlayer gamePlayer = new GamePlayer(player);
+            getPlayers().add(gamePlayer);
+            getPlayersToGamePlayers().put(player, gamePlayer);
         }
 
         Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Début de la partie !");
@@ -182,7 +270,7 @@ public class Game {
         return (playersCount - 1) % 3;
     }
 
-        public void attributeRoles() {
+    public void attributeRoles() {
         Collections.shuffle(minionPool);
         Collections.shuffle(outsidersPool);
         Collections.shuffle(folkstownPool);
@@ -234,6 +322,8 @@ public class Game {
 
             sendRoleMessage(player);
         }
+
+        //sortNightOrder();
     }
 
     public void sendRoleMessage(GamePlayer player) {
@@ -256,6 +346,31 @@ public class Game {
             Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + player.getPlayer().getDisplayName()
                 + ChatColor.RESET + ChatColor.DARK_PURPLE + " : " + getRoleAttributionMap().get(player).getName());
         }
+    }
+
+    public Inventory createTargetSelectionInventory() {
+        int size = ((getPlayers().size() - 1) / 9 + 1) * 9; // multiple of 9
+        Inventory inv = Bukkit.createInventory(null, size, "Choose a player");
+
+        for (GamePlayer target : getPlayers()) {
+            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) head.getItemMeta();
+
+            meta.setOwningPlayer(target.getPlayer());
+            meta.setDisplayName(ChatColor.YELLOW + target.getPlayer().getName());
+
+            // Store UUID in persistent data container (important for later retrieval)
+            meta.getPersistentDataContainer().set(
+                    new NamespacedKey(plugin, "target_uuid"),
+                    PersistentDataType.STRING,
+                    target.getPlayer().getUniqueId().toString()
+            );
+
+            head.setItemMeta(meta);
+            inv.addItem(head);
+        }
+
+        return inv;
     }
 
 }

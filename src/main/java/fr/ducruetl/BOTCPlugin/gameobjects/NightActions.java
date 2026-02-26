@@ -14,6 +14,7 @@ public class NightActions {
         PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 1);
         for (GamePlayer player : game.getPlayers()) {
             player.getPlayer().addPotionEffect(blindness);
+            game.getNightOrder().add(player);
         }
 
         NightActions.processNextNightAction(game);
@@ -26,6 +27,7 @@ public class NightActions {
         }
 
         game.setCurrentNightActor(game.getNightOrder().poll());
+        Bukkit.getLogger().info("Au tour de " + game.getCurrentNightActor().getPlayer().getDisplayName());
         game.getCurrentNightActor().getRole().onNightTurn(game, game.getCurrentNightActor());
     }
 

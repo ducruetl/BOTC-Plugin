@@ -14,7 +14,7 @@ public class Ravenkeeper extends Role {
             "Si le diablotin te tue pendant la nuit, tu peut "
             + "choisir de voir le rôle de la personne de ton choix.",
             Team.TOWNSFOLK,
-            2
+            4
         );
     }
 

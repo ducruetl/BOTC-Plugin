@@ -1,5 +1,13 @@
 package fr.ducruetl.BOTCPlugin.gameobjects.roles.demons;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
 import fr.ducruetl.BOTCPlugin.gameobjects.Game;
 import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
 import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
@@ -21,7 +29,45 @@ public class Poisoner extends Role {
 
     @Override
     public void onNightTurn(Game game, GamePlayer player) {
-        NightActions.processNextNightAction(game);
+        if (game.getLastPoisoned() != null) {
+            game.getLastPoisoned().setPoisoned(false);
+            game.setLastPoisoned(null);
+        }
+
+        Inventory playerSelectInventory = game.createTargetSelectionInventory();
+        player.getPlayer().closeInventory();
+        player.getPlayer().openInventory(playerSelectInventory);
+
+        BukkitTask timer = game.getPlugin().startTimer(
+            "Votre tour", 
+            game.getPlugin().getConfig().getInt("timers.nightTimeDuration"),
+            new ArrayList<GamePlayer>(Arrays.asList(player))
+        );
+        
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
+
+                if (timeRemainingInSeconds <= 0 || game.getSelectedPlayer() != null) {
+                    this.cancel();
+                    timer.cancel();
+                    player.getPlayer().closeInventory();
+
+                    GamePlayer selectedPlayer = game.getSelectedPlayer();
+                    if (selectedPlayer != null) {
+                        selectedPlayer.setPoisoned(true);
+                        game.setLastPoisoned(selectedPlayer);
+                        game.setSelectedPlayer(null);
+                    }
+                    
+                    NightActions.processNextNightAction(game);
+                    return;
+                }
+
+                timeRemainingInSeconds--;
+            }
+        }.runTaskTimer(game.getPlugin(), 0, Math.round(Bukkit.getServerTickManager().getTickRate()));  
     }
-    
 }

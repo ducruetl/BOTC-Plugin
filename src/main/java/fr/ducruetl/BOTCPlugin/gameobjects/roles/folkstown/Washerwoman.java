@@ -20,6 +20,11 @@ public class Washerwoman extends Role {
 
     @Override
     public void onNightTurn(Game game, GamePlayer player) {
+        if (game.getDay() != 1) {
+            NightActions.processNextNightAction(game);
+            return;
+        }
+
         NightActions.processNextNightAction(game);
     }
     

@@ -1,5 +1,7 @@
 package fr.ducruetl.BOTCPlugin;
 
+import java.util.ArrayList;
+
 import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
@@ -8,18 +10,20 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Team;
 
 import fr.ducruetl.BOTCPlugin.commands.NametagCommand;
+import fr.ducruetl.BOTCPlugin.gameobjects.Game;
+import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
 import fr.ducruetl.BOTCPlugin.listeners.InventoryListener;
 import fr.ducruetl.BOTCPlugin.listeners.PlayerListener;
 
 public final class BOTCPlugin extends JavaPlugin {
 
     public static final String NAMETAG_TEAM_NAME = "hidenametag";
-    public static final int TICK_PER_SECONDS = 20;
 
-    private BossBar timerBar;
+    private Game game;
 
     @Override
     public void onEnable() {
@@ -32,7 +36,6 @@ public final class BOTCPlugin extends JavaPlugin {
         }
 
         setWorldsOptions();
-        this.timerBar = createTimerBar();
 
         // Register listeners classes
         PluginManager pluginManager = getServer().getPluginManager();
@@ -47,6 +50,14 @@ public final class BOTCPlugin extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Plugin BOTC stopped.");
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public Team getNametagTeam() {
@@ -64,15 +75,18 @@ public final class BOTCPlugin extends JavaPlugin {
         }
     }
 
-    // TODO: Find better way to stop the timer
     // TODO: Find a way to add a trailing 0 to minutes/seconds (ex. 01:05)
-    public BossBar createTimerBar() {
-        BossBar timerBar = getServer().createBossBar("Timer", BarColor.BLUE, BarStyle.SOLID);
+    public BukkitTask startTimer(String timerName, int timerDuration, ArrayList<GamePlayer> players) {
+        BossBar timerBar = getServer().createBossBar(timerName, BarColor.BLUE, BarStyle.SOLID);
         timerBar.setProgress(1.0);
         timerBar.setVisible(true);
 
-        new BukkitRunnable() {
-            double totalTimeInSeconds = (double) getConfig().getInt("timers.freeTimeDuration");
+        for (GamePlayer player : players) {
+            timerBar.addPlayer(player.getPlayer());
+        }
+
+        BukkitTask task = new BukkitRunnable() {
+            double totalTimeInSeconds = (double) timerDuration;
             double timeRemainingInSeconds = totalTimeInSeconds;
 
             @Override
@@ -80,31 +94,18 @@ public final class BOTCPlugin extends JavaPlugin {
                 if (timeRemainingInSeconds <= 0) {
                     timerBar.setVisible(false);
                     this.cancel();
+                    return;
                 }
 
                 timeRemainingInSeconds--;
                 int minutesRemaining = (int) Math.floor((int) timeRemainingInSeconds / 60);
                 int secondsRemaining = (int) timeRemainingInSeconds % 60;
                 timerBar.setProgress(timeRemainingInSeconds/totalTimeInSeconds);
-                timerBar.setTitle(minutesRemaining + ":" + secondsRemaining + " avant la réunion.");
+                timerBar.setTitle(timerName + " " + minutesRemaining + ":" + secondsRemaining);
             }
             
-        }.runTaskTimer(this, 0, TICK_PER_SECONDS);
+        }.runTaskTimer(this, 0, Math.round(getServer().getServerTickManager().getTickRate()));
 
-        /*
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                getServer().getScheduler().cancelTask(timer.getTaskId());
-                timerBar.setVisible(false);
-            }
-        }, getConfig().getInt("timers.freeTimeDuration") * TICK_PER_SECONDS);
-        */
-        return timerBar;
+        return task;
     }
-
-    public BossBar getTimerBar() {
-        return this.timerBar;
-    }
-
 }

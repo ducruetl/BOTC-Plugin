@@ -16,6 +16,10 @@ public class GamePlayer {
 
     private boolean isDead;
 
+    private boolean isPoisoned;
+
+    private boolean isProtected;
+
     private boolean hasVotedAfterDeath;
 
     private boolean hasUsedSlayerPower;
@@ -26,6 +30,8 @@ public class GamePlayer {
         this.facadeRole = null;
         this.facadeTeam = null;
         this.isDead = false;
+        this.isPoisoned = false;
+        this.isProtected = false;
         this.hasVotedAfterDeath = false;
         this.hasUsedSlayerPower = false;
     }
@@ -68,6 +74,22 @@ public class GamePlayer {
 
     public void setDead(boolean isDead) {
         this.isDead = isDead;
+    }
+
+    public boolean isPoisoned() {
+        return this.isPoisoned;
+    }
+
+    public void setPoisoned(boolean isPoisoned) {
+        this.isPoisoned = isPoisoned;
+    }
+
+    public boolean isProtected() {
+        return this.isProtected;
+    }
+
+    public void setProtected(boolean isProtected) {
+        this.isProtected = isProtected;
     }
 
     public boolean isHasVotedAfterDeath() {
