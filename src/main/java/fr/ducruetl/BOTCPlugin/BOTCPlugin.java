@@ -79,11 +79,12 @@ public final class BOTCPlugin extends JavaPlugin {
     public BukkitTask startTimer(String timerName, int timerDuration, ArrayList<GamePlayer> players) {
         BossBar timerBar = getServer().createBossBar(timerName, BarColor.BLUE, BarStyle.SOLID);
         timerBar.setProgress(1.0);
-        timerBar.setVisible(true);
 
         for (GamePlayer player : players) {
             timerBar.addPlayer(player.getPlayer());
         }
+
+        timerBar.setVisible(true);
 
         BukkitTask task = new BukkitRunnable() {
             double totalTimeInSeconds = (double) timerDuration;

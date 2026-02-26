@@ -44,11 +44,10 @@ public class Spy extends Role {
         );
         
         new BukkitRunnable() {
+            double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
 
             @Override
             public void run() {
-                double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
-
                 if (timeRemainingInSeconds <= 0) {
                     this.cancel();
                     timer.cancel();

@@ -327,8 +327,11 @@ public class Game {
     }
 
     public void sendRoleMessage(GamePlayer player) {
+        String roleName = player.getRole() instanceof Drunk ? player.getFacadeRole().getName() : player.getRole().getName();
+        String roleDesc = player.getRole() instanceof Drunk ? player.getFacadeRole().getDescription() : player.getRole().getDescription();
+
         player.getPlayer().sendMessage("");
-        player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + player.getRole().getName());
+        player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + roleName);
         
         if (player.getRole().getTeam() == Team.DEMON 
                 || player.getRole().getTeam() == Team.MINION) {
@@ -337,7 +340,7 @@ public class Game {
             player.getPlayer().sendMessage(ChatColor.BLUE + "Vous appartenez au camp des " + ChatColor.GREEN + "" + ChatColor.BOLD + "Citoyens");
         }
 
-        player.getPlayer().sendMessage(ChatColor.BLUE + player.getRole().getDescription());
+        player.getPlayer().sendMessage(ChatColor.BLUE + roleDesc);
         player.getPlayer().sendMessage("");
     }
 

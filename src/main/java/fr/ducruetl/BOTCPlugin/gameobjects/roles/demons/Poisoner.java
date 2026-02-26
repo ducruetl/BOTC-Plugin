@@ -45,11 +45,10 @@ public class Poisoner extends Role {
         );
         
         new BukkitRunnable() {
+            double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
 
             @Override
             public void run() {
-                double timeRemainingInSeconds = (double) game.getPlugin().getConfig().getInt("timers.nightTimeDuration");
-
                 if (timeRemainingInSeconds <= 0 || game.getSelectedPlayer() != null) {
                     this.cancel();
                     timer.cancel();
