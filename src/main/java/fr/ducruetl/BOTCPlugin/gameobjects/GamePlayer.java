@@ -1,8 +1,8 @@
-package fr.ducruetl.BOTCPlugin.models;
+package fr.ducruetl.BOTCPlugin.gameobjects;
 
 import org.bukkit.entity.Player;
 
-import fr.ducruetl.BOTCPlugin.models.roles.Role;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
 
 public class GamePlayer {
 

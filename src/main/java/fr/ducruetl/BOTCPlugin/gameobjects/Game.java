@@ -1,4 +1,4 @@
-package fr.ducruetl.BOTCPlugin.models;
+package fr.ducruetl.BOTCPlugin.gameobjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,32 +10,31 @@ import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
-import fr.ducruetl.BOTCPlugin.models.roles.Role;
-import fr.ducruetl.BOTCPlugin.models.roles.demons.Imp;
-import fr.ducruetl.BOTCPlugin.models.roles.demons.Poisoner;
-import fr.ducruetl.BOTCPlugin.models.roles.demons.ScarletWoman;
-import fr.ducruetl.BOTCPlugin.models.roles.demons.Spy;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Chef;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Empath;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.FortuneTeller;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Investigator;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Librarian;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Mayor;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Monk;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Ravenkeeper;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Slayer;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Soldier;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Undertaker;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Virgin;
-import fr.ducruetl.BOTCPlugin.models.roles.folkstown.Washerwoman;
-import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Butler;
-import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Drunk;
-import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Recluse;
-import fr.ducruetl.BOTCPlugin.models.roles.outsiders.Saint;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.demons.Imp;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.demons.Poisoner;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.demons.ScarletWoman;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.demons.Spy;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Chef;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Empath;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.FortuneTeller;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Investigator;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Librarian;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Mayor;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Monk;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Ravenkeeper;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Slayer;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Soldier;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Undertaker;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Virgin;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Washerwoman;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Butler;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Recluse;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Saint;
+
 import org.bukkit.ChatColor;
 
 public class Game {
@@ -49,6 +48,8 @@ public class Game {
     private GamePlayer currentNightActor;
 
     private ArrayList<Role> composition;
+
+    private ArrayList<Role> outOfComposition;
 
     // To keep track of the composition and show it at the end
     private Map<GamePlayer, Role> roleAttributionMap;
@@ -108,6 +109,10 @@ public class Game {
         return composition;
     }
 
+    public ArrayList<Role> getOutOfComposition() {
+        return outOfComposition;
+    }
+
     public int getDay() {
         return day;
     }
@@ -128,6 +133,18 @@ public class Game {
         return roleAttributionMap;
     }
 
+    public Queue<GamePlayer> getNightOrder() {
+        return nightOrder;
+    }
+
+    public GamePlayer getCurrentNightActor() {
+        return currentNightActor;
+    }
+
+    public void setCurrentNightActor(GamePlayer currentNightActor) {
+        this.currentNightActor = currentNightActor;
+    }
+
     public void startGame() {
 
         if (Bukkit.getServer().getOnlinePlayers().size() < 5) {
@@ -144,34 +161,7 @@ public class Game {
         Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Début de la partie !");
 
         attributeRoles();
-        nextNight();
-    }
-
-    public void nextNight() {
-        setState(GameState.NIGHT);
-        Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "La nuit tombe...");
-        
-        PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 1);
-        for (GamePlayer player : getPlayers()) {
-            player.getPlayer().addPotionEffect(blindness);
-        }
-
-        processNextNightAction();
-    }
-
-    public void processNextNightAction() {
-        if (nightOrder.isEmpty()) {
-            endNight();
-            return;
-        }
-
-        currentNightActor = nightOrder.poll();
-        currentNightActor.getRole().onNightTurn(this, currentNightActor);
-    }
-
-    public void endNight() {
-        setState(GameState.DAY);
-        Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "Fin de la nuit !");
+        NightActions.nextNight(this);
     }
 
     public int getFolkstownCount() {
@@ -203,21 +193,44 @@ public class Game {
             getComposition().add(minionPool.get(i));
         }
 
+        for (int i = getMinionsCount(); i < minionPool.size(); i++) {
+            getOutOfComposition().add(minionPool.get(i));
+        }
+
         for (int i = 0; i < getOutsidersCount(); i++) {
             getComposition().add(outsidersPool.get(i));
+        }
+
+        for (int i = getOutsidersCount(); i < outsidersPool.size(); i++) {
+            getOutOfComposition().add(outsidersPool.get(i));
         }
 
         for (int i = 0; i < getFolkstownCount(); i++) {
             getComposition().add(folkstownPool.get(i));
         }
 
+        for (int i = getFolkstownCount(); i < folkstownPool.size(); i++) {
+            getOutOfComposition().add(folkstownPool.get(i));
+        }
+
         Collections.shuffle(getComposition());
+        Collections.shuffle(getOutOfComposition());
 
         for (int i = 0; i < getPlayers().size(); i++) {
             GamePlayer player = getPlayers().get(i);
 
             player.setRole(getComposition().get(i));
             getRoleAttributionMap().put(player, player.getRole());
+
+            if (player.getRole() instanceof Drunk) {
+                int j = 0;
+                while (getOutOfComposition().get(j).getTeam() != Team.TOWNSFOLK) {
+                    j++;
+                }
+
+                player.setFacadeRole(getOutOfComposition().get(j));
+                player.setFacadeTeam(Team.TOWNSFOLK);
+            }
 
             sendRoleMessage(player);
         }

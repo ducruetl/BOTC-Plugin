@@ -1,9 +1,7 @@
-package fr.ducruetl.BOTCPlugin.models.roles.folkstown;
+package fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown;
 
-import fr.ducruetl.BOTCPlugin.models.Game;
-import fr.ducruetl.BOTCPlugin.models.GamePlayer;
-import fr.ducruetl.BOTCPlugin.models.Team;
-import fr.ducruetl.BOTCPlugin.models.roles.Role;
+import fr.ducruetl.BOTCPlugin.gameobjects.Team;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
 
 public class Mayor extends Role {
 
@@ -18,9 +16,4 @@ public class Mayor extends Role {
         );
     }
 
-    @Override
-    public void onNightTurn(Game game, GamePlayer player) {
-        game.processNextNightAction();
-    }
-    
 }

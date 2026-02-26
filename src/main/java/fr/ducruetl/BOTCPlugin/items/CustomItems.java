@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
-import fr.ducruetl.BOTCPlugin.models.Game;
-import net.md_5.bungee.api.ChatColor;
+import fr.ducruetl.BOTCPlugin.gameobjects.Game;
+import org.bukkit.ChatColor;
 
 public class CustomItems {
     

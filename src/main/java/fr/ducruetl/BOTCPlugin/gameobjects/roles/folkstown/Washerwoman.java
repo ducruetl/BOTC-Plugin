@@ -1,9 +1,10 @@
-package fr.ducruetl.BOTCPlugin.models.roles.folkstown;
+package fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown;
 
-import fr.ducruetl.BOTCPlugin.models.Game;
-import fr.ducruetl.BOTCPlugin.models.GamePlayer;
-import fr.ducruetl.BOTCPlugin.models.Team;
-import fr.ducruetl.BOTCPlugin.models.roles.Role;
+import fr.ducruetl.BOTCPlugin.gameobjects.Game;
+import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
+import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
+import fr.ducruetl.BOTCPlugin.gameobjects.Team;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
 
 public class Washerwoman extends Role {
 
@@ -19,7 +20,7 @@ public class Washerwoman extends Role {
 
     @Override
     public void onNightTurn(Game game, GamePlayer player) {
-        game.processNextNightAction();
+        NightActions.processNextNightAction(game);
     }
     
 }

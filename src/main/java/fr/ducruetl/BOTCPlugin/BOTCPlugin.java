@@ -8,7 +8,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Team;
 
 import fr.ducruetl.BOTCPlugin.commands.NametagCommand;
@@ -72,12 +71,17 @@ public final class BOTCPlugin extends JavaPlugin {
         timerBar.setProgress(1.0);
         timerBar.setVisible(true);
 
-        BukkitTask timer = new BukkitRunnable() {
+        new BukkitRunnable() {
             double totalTimeInSeconds = (double) getConfig().getInt("timers.freeTimeDuration");
             double timeRemainingInSeconds = totalTimeInSeconds;
 
             @Override
             public void run() {
+                if (timeRemainingInSeconds <= 0) {
+                    timerBar.setVisible(false);
+                    this.cancel();
+                }
+
                 timeRemainingInSeconds--;
                 int minutesRemaining = (int) Math.floor((int) timeRemainingInSeconds / 60);
                 int secondsRemaining = (int) timeRemainingInSeconds % 60;
@@ -87,6 +91,7 @@ public final class BOTCPlugin extends JavaPlugin {
             
         }.runTaskTimer(this, 0, TICK_PER_SECONDS);
 
+        /*
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
@@ -94,7 +99,7 @@ public final class BOTCPlugin extends JavaPlugin {
                 timerBar.setVisible(false);
             }
         }, getConfig().getInt("timers.freeTimeDuration") * TICK_PER_SECONDS);
-
+        */
         return timerBar;
     }
 

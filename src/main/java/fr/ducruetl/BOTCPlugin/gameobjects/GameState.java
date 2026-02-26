@@ -1,4 +1,4 @@
-package fr.ducruetl.BOTCPlugin.models;
+package fr.ducruetl.BOTCPlugin.gameobjects;
 
 public enum GameState {
     NIGHT,
