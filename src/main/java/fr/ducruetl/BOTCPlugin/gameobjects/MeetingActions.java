@@ -61,7 +61,8 @@ public class MeetingActions {
         game.setState(GameState.VOTE);
 
         for (GamePlayer player : game.getPlayers()) {
-            player.getPlayer().getInventory().clear();
+            player.getPlayer().getInventory().remove(CustomItems.getNominationItem());
+            player.getPlayer().getInventory().remove(CustomItems.getVoteToken());
         }
 
         if (game.getNominatedPlayers().isEmpty()) {

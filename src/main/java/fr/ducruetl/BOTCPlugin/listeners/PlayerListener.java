@@ -4,13 +4,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.RayTraceResult;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
@@ -66,20 +68,35 @@ public class PlayerListener implements Listener {
         CustomItems.handleCustomItem(plugin, event, player, item);
     }
 
-    @EventHandler
-    public void onInteractWithPlayer(PlayerInteractAtEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Player clickedPlayer)) {
+    @EventHandler(priority = EventPriority.LOW)
+    public void onInteractWithPlayer(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
 
         if (plugin.getGame() == null 
-        || (plugin.getGame().getState() != GameState.MEETING)
-        || !event.getPlayer().getInventory().getItemInMainHand().equals(CustomItems.getNominationItem())) {
+        || plugin.getGame().getState() != GameState.MEETING) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        if (!player.getInventory().getItemInMainHand().equals(CustomItems.getNominationItem())) {
+            return;
+        }
+
+        RayTraceResult result = player.getWorld().rayTraceEntities(
+            player.getEyeLocation(),
+            player.getEyeLocation().getDirection(),
+            10.0, // range
+            entity -> entity instanceof Player && entity != player
+        );
+
+        if (result == null 
+        || !(result.getHitEntity() instanceof Player clickedPlayer)) {
             return;
         }
 
         GamePlayer clickedGamePlayer = plugin.getGame().getPlayersToGamePlayers().get(clickedPlayer);
-
         if (clickedGamePlayer.isDead()) {
             event.getPlayer().sendMessage(ChatColor.RED + "Ce joueur est déjà mort.");
             return;

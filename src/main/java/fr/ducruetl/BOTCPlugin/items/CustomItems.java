@@ -159,6 +159,11 @@ public class CustomItems {
             GamePlayer voteTarget = plugin.getGame().getNominatedPlayers().getFirst();
             player.getInventory().remove(getVoteToken());
             plugin.getGame().getPlayersVotes().put(voteTarget, plugin.getGame().getPlayersVotes().get(voteTarget) + 1);
+
+            GamePlayer gamePlayer = plugin.getGame().getPlayersToGamePlayers().get(player);
+            if (gamePlayer.isDead()) {
+                gamePlayer.setHasVotedAfterDeath(true);
+            }
         }
     }
 
