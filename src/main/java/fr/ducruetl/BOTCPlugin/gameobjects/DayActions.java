@@ -9,6 +9,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class DayActions {
     
+    /**
+     * Start the next day
+     * @param game Game object related
+     */
     public static void nextDay(Game game) {
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Le jour se lève !");
 

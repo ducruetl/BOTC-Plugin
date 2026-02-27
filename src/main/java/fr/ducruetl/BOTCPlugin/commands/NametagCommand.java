@@ -41,6 +41,22 @@ public class NametagCommand implements CommandExecutor {
         return true;
     }
     
+    /**
+     * Enable players nametags
+     * @param plugin BOTCPlugin instance
+     */
+    public static void enableNametags(BOTCPlugin plugin) {
+        plugin.getNametagTeam().setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.ALWAYS);
+        plugin.getServer().broadcastMessage("Nametags enabled.");
+    }
 
+    /**
+     * Disable players nametags
+     * @param plugin BOTCPlugin instance
+     */
+    public static void disableNametags(BOTCPlugin plugin) {
+        plugin.getNametagTeam().setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.ALWAYS);
+        plugin.getServer().broadcastMessage("Nametags disabled.");
+    }
     
 }

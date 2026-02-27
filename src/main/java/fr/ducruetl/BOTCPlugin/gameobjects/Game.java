@@ -219,8 +219,10 @@ public class Game {
         this.lastProtected = lastProtected;
     }
 
+    /**
+     * If there are enough players online (5 minimum), start the game
+     */
     public void startGame() {
-
         if (Bukkit.getServer().getOnlinePlayers().size() < 5) {
             Bukkit.broadcastMessage(ChatColor.RED 
                 + "Il n'y a pas assez de joueurs pour commencer la partie (" 
@@ -240,24 +242,39 @@ public class Game {
         NightActions.nextNight(this);
     }
 
+    /**
+     * Calculate the number of folkstown roles that should be present in composition, based on the number of players
+     * @return The suggested number of folkstown roles based on the number of players
+     */
     public int getFolkstownCount() {
         int playersCount = getPlayers().size();
 
         return playersCount - 1 - getOutsidersCount() - getMinionsCount();
     }
 
+    /**
+     * Calculate the number of minions roles that should be present in composition, based on the number of players
+     * @return The suggested number of minions roles based on the number of players
+     */
     public int getMinionsCount() {
         int playersCount = getPlayers().size();
 
         return (int) Math.floor((playersCount - 1 - getOutsidersCount()) / 10 * 2);
     }
 
+    /**
+     * Calculate the number of outsiders roles that should be present in composition, based on the number of players
+     * @return The suggested number of outsiders roles based on the number of players
+     */
     public int getOutsidersCount() {
         int playersCount = getPlayers().size();
 
         return (playersCount - 1) % 3;
     }
 
+    /**
+     * Attribute a role to each player in the game
+     */
     public void attributeRoles() {
         Collections.shuffle(minionPool);
         Collections.shuffle(outsidersPool);
@@ -312,6 +329,10 @@ public class Game {
         }
     }
 
+    /**
+     *  Send his role description message to a player
+     * @param player The player to send a message
+     */
     public void sendRoleMessage(GamePlayer player) {
         String roleName = player.getRole() instanceof Drunk ? player.getFacadeRole().getName() : player.getRole().getName();
         String roleDesc = player.getRole() instanceof Drunk ? player.getFacadeRole().getDescription() : player.getRole().getDescription();

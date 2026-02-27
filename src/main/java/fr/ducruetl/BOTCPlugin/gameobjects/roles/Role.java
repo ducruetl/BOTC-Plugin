@@ -54,6 +54,11 @@ public class Role {
         this.nightPriority = nightPriority;
     }
 
+    /**
+     * Do the night actions related to the role
+     * @param game The related game
+     * @param player The player that has the role
+     */
     public void onNightTurn(Game game, GamePlayer player) {
         NightActions.processNextNightAction(game);
     }

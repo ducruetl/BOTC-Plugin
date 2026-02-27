@@ -7,6 +7,10 @@ import org.bukkit.potion.PotionEffectType;
 
 public class NightActions {
 
+    /**
+     * Start the next night
+     * @param game Game object related
+     */
     public static void nextNight(Game game) {
         game.setState(GameState.NIGHT);
         Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "La nuit tombe...");
@@ -20,6 +24,10 @@ public class NightActions {
         NightActions.processNextNightAction(game);
     }
 
+    /**
+     * Start the next role night action in the game night order queue
+     * @param game Game object related
+     */
     public static void processNextNightAction(Game game) {
         if (game.getNightOrder().isEmpty()) {
             NightActions.endNight(game);
