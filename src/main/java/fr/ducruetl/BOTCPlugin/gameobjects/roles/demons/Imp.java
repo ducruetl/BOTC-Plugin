@@ -32,7 +32,7 @@ public class Imp extends Role {
 
     @Override
     public void onNightTurn(Game game, GamePlayer player) {
-        game.setLastKilled(null);
+        game.setLastKilledByImp(null);
 
         Inventory playerSelectInventory = game.createTargetSelectionInventory();
         player.getPlayer().closeInventory();
@@ -65,7 +65,7 @@ public class Imp extends Role {
                         && !((selectedPlayer.getRole() instanceof Soldier) && !selectedPlayer.isPoisoned())
                         && (!(selectedPlayer.isProtected()))) {
                         selectedPlayer.setDead(true);
-                        game.setLastKilled(selectedPlayer);
+                        game.setLastKilledByImp(selectedPlayer);
                         game.setSelectedPlayer(null);
                     }
                     

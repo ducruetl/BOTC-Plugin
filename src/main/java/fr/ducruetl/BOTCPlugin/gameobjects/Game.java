@@ -56,7 +56,9 @@ public class Game {
 
     private GamePlayer selectedPlayer;
 
-    private GamePlayer lastKilled;
+    private GamePlayer lastKilledByImp;
+
+    private GamePlayer lastKilledByVote;
 
     private GamePlayer lastPoisoned;
 
@@ -185,12 +187,20 @@ public class Game {
         this.selectedPlayer = selectedPlayer;
     }
 
-    public GamePlayer getLastKilled() {
-        return lastKilled;
+    public GamePlayer getLastKilledByImp() {
+        return lastKilledByImp;
     }
 
-    public void setLastKilled(GamePlayer lastKilled) {
-        this.lastKilled = lastKilled;
+    public void setLastKilledByImp(GamePlayer lastKilledByImp) {
+        this.lastKilledByImp = lastKilledByImp;
+    }
+
+    public GamePlayer getLastKilledByVote() {
+        return lastKilledByVote;
+    }
+
+    public void setLastKilledByVote(GamePlayer lastKilledByVote) {
+        this.lastKilledByVote = lastKilledByVote;
     }
 
     public GamePlayer getLastPoisoned() {
