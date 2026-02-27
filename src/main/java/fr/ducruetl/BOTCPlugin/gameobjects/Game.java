@@ -50,6 +50,10 @@ public class Game {
 
     private Map<Player, GamePlayer> playersToGamePlayers;
 
+    private ArrayList<GamePlayer> nominatedPlayers;
+
+    private Map<GamePlayer, Integer> playersVotes;
+
     private Queue<GamePlayer> nightOrder;
 
     private GamePlayer currentNightActor;
@@ -108,6 +112,8 @@ public class Game {
         this.plugin = plugin;
         this.players = new ArrayList<>();
         this.playersToGamePlayers = new HashMap<>();
+        this.nominatedPlayers = new ArrayList<>();
+        this.playersVotes = new HashMap<>();
         this.nightOrder = new PriorityQueue<>(
             Comparator.comparingInt(gp -> {
                 Role role = gp.getRole();
@@ -136,6 +142,14 @@ public class Game {
 
     public Map<Player, GamePlayer> getPlayersToGamePlayers() {
         return playersToGamePlayers;
+    }
+
+    public ArrayList<GamePlayer> getNominatedPlayers() {
+        return nominatedPlayers;
+    }
+
+    public Map<GamePlayer, Integer> getPlayersVotes() {
+        return playersVotes;
     }
 
     public ArrayList<Role> getComposition() {
@@ -183,7 +197,6 @@ public class Game {
     }
 
     public void setSelectedPlayer(GamePlayer selectedPlayer) {
-        Bukkit.getLogger().info(selectedPlayer.getPlayer().getDisplayName() + " selectionné");
         this.selectedPlayer = selectedPlayer;
     }
 
@@ -351,6 +364,9 @@ public class Game {
         player.getPlayer().sendMessage("");
     }
 
+    /**
+     * Broadcast the roles of all players
+     */
     public void broadcastPlayersRoles() {
         for (GamePlayer player : getRoleAttributionMap().keySet()) {
             Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + player.getPlayer().getDisplayName()

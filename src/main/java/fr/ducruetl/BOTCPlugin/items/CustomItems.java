@@ -1,13 +1,19 @@
 package fr.ducruetl.BOTCPlugin.items;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.Game;
@@ -15,6 +21,7 @@ import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 public class CustomItems {
     
@@ -58,11 +65,47 @@ public class CustomItems {
         return startGameItem;
     }
 
+    public static ItemStack getNominationItem() {
+        ItemStack nominationItem = new ItemStack(Material.FEATHER, 1);
+        ItemMeta meta = nominationItem.getItemMeta();
+
+        meta.setDisplayName(ChatColor.YELLOW + "Nomination");
+        meta.setLore(new ArrayList<>(Arrays.asList(ChatColor.GRAY + "Clic droit sur un joueur pour le nommer")));
+        meta.addEnchant(Enchantment.UNBREAKING, 0, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTMENTS);
+        nominationItem.setItemMeta(meta);
+
+        return nominationItem;
+    }
+
+    public static ItemStack getVoteToken() {
+        ItemStack voteToken = new ItemStack(Material.GOLD_NUGGET, 1);
+        ItemMeta meta = voteToken.getItemMeta();
+
+        meta.setDisplayName(ChatColor.YELLOW + "Vote");
+        meta.setLore(new ArrayList<>(Arrays.asList(ChatColor.GRAY + "Clic droit sur un joueur pour le voter")));
+        meta.addEnchant(Enchantment.UNBREAKING, 0, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTMENTS);
+        voteToken.setItemMeta(meta);
+
+        return voteToken;
+    }
+
+    public static ItemStack getDeathHelmet() {
+        ItemStack deathHelmet = new ItemStack(Material.LEATHER_HELMET, 1);
+        LeatherArmorMeta meta = (LeatherArmorMeta) deathHelmet.getItemMeta();
+
+        meta.setColor(Color.BLACK);
+        deathHelmet.setItemMeta(meta);
+
+        return deathHelmet;
+    }
+
     public static ItemStack getRolesBook(Game game) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta) book.getItemMeta();
 
-        meta.setTitle("Night Information");
+        meta.setTitle("Roles");
         meta.setAuthor("Game");
 
         String rolesString = "";
@@ -110,6 +153,12 @@ public class CustomItems {
             event.setCancelled(true);
             plugin.setGame(new Game(plugin));
             plugin.getGame().startGame();
+        } else if (item.equals(getVoteToken())) {
+            // Vote for current nominated player
+            event.setCancelled(true);
+            GamePlayer voteTarget = plugin.getGame().getNominatedPlayers().getFirst();
+            player.getInventory().remove(getVoteToken());
+            plugin.getGame().getPlayersVotes().put(voteTarget, plugin.getGame().getPlayersVotes().get(voteTarget) + 1);
         }
     }
 

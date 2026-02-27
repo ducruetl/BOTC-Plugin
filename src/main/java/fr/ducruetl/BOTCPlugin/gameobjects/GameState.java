@@ -4,5 +4,6 @@ public enum GameState {
     NOT_STARTED,
     NIGHT,
     DAY,
-    MEETUP
+    MEETING,
+    VOTE
 }

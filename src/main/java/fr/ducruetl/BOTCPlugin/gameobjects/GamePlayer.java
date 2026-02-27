@@ -3,6 +3,7 @@ package fr.ducruetl.BOTCPlugin.gameobjects;
 import org.bukkit.entity.Player;
 
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
+import fr.ducruetl.BOTCPlugin.items.CustomItems;
 
 public class GamePlayer {
 
@@ -73,6 +74,10 @@ public class GamePlayer {
     }
 
     public void setDead(boolean isDead) {
+        if (isDead) {
+            getPlayer().getInventory().setHelmet(CustomItems.getDeathHelmet());    
+        }
+
         this.isDead = isDead;
     }
 

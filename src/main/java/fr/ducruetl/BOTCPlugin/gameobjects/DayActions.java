@@ -14,7 +14,18 @@ public class DayActions {
      * @param game Game object related
      */
     public static void nextDay(Game game) {
+        game.setState(GameState.DAY);
         Bukkit.broadcastMessage(ChatColor.YELLOW + "Le jour se lève !");
+
+        if (game.getLastKilledByImp() != null) {
+            Bukkit.broadcastMessage(
+                ChatColor.YELLOW + "" + ChatColor.BOLD + game.getLastKilledByImp().getPlayer().getDisplayName()
+                + ChatColor.RESET + ChatColor.RED + " a été tué durant la nuit"
+            );
+            game.setLastKilledByImp(null);
+        } else {
+            Bukkit.broadcastMessage(ChatColor.BLUE + "Personne n'est mort cette nuit");
+        }
 
         String timerName = "Jour " + game.getDay() + " | ";
 
@@ -36,6 +47,7 @@ public class DayActions {
                 if (timeRemainingInSeconds <= 0) {
                     timerBar.removeAll();
                     this.cancel();
+                    MeetingActions.nextMeeting(game);
                     return;
                 }
 
@@ -48,5 +60,4 @@ public class DayActions {
             
         }.runTaskTimer(game.getPlugin(), 0, Math.round(game.getPlugin().getServer().getServerTickManager().getTickRate()));
     }
-
 }

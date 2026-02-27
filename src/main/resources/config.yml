@@ -2,3 +2,4 @@ timers:
   dayTimeDuration: 60
   meetingTimeDuration: 60
   nightTimeDuration: 10
+  voteTimeDuration: 10

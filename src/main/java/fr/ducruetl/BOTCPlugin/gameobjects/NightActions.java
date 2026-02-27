@@ -30,7 +30,7 @@ public class NightActions {
      */
     public static void processNextNightAction(Game game) {
         if (game.getNightOrder().isEmpty()) {
-            NightActions.endNight(game);
+            DayActions.nextDay(game);
             return;
         }
 
@@ -38,10 +38,4 @@ public class NightActions {
         Bukkit.getLogger().info("Au tour de " + game.getCurrentNightActor().getPlayer().getDisplayName());
         game.getCurrentNightActor().getRole().onNightTurn(game, game.getCurrentNightActor());
     }
-
-    public static void endNight(Game game) {
-        game.setState(GameState.DAY);
-        Bukkit.broadcastMessage(ChatColor.DARK_BLUE + "Fin de la nuit !");
-    }
-
 }
