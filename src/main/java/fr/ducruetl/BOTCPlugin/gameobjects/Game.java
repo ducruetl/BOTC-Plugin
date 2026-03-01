@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
@@ -140,6 +141,17 @@ public class Game {
         return players;
     }
 
+    public int getAlivePlayersCount() {
+        int count = 0;
+        for (GamePlayer player : players) {
+            if (!player.isDead()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public Map<Player, GamePlayer> getPlayersToGamePlayers() {
         return playersToGamePlayers;
     }
@@ -252,7 +264,15 @@ public class Game {
         Bukkit.broadcastMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Début de la partie !");
 
         attributeRoles();
-        NightActions.nextNight(this);
+        Game game = this;
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                NightActions.nextNight(game);
+            }   
+
+        }.runTaskLater(plugin, 20 * 7); // 7 seconds, to let the role title before starting the game
     }
 
     /**
@@ -349,6 +369,8 @@ public class Game {
     public void sendRoleMessage(GamePlayer player) {
         String roleName = player.getRole() instanceof Drunk ? player.getFacadeRole().getName() : player.getRole().getName();
         String roleDesc = player.getRole() instanceof Drunk ? player.getFacadeRole().getDescription() : player.getRole().getDescription();
+
+        player.getPlayer().sendTitle(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + roleName, null, 20, 80, 20);
 
         player.getPlayer().sendMessage("");
         player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + roleName);

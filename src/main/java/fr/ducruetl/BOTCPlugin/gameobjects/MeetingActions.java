@@ -1,5 +1,7 @@
 package fr.ducruetl.BOTCPlugin.gameobjects;
 
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -26,7 +28,6 @@ public class MeetingActions {
 
         for (GamePlayer player : game.getPlayers()) {
             timerBar.addPlayer(player.getPlayer());
-            player.getPlayer().getInventory().clear();
             if (!player.isDead()) {
                 player.getPlayer().getInventory().setItem(0, CustomItems.getNominationItem());
             }
@@ -43,7 +44,7 @@ public class MeetingActions {
                 if (timeRemainingInSeconds <= 0) {
                     timerBar.removeAll();
                     this.cancel();
-                    MeetingActions.nextVote(game);
+                    nextVote(game);
                     return;
                 }
 
@@ -66,6 +67,7 @@ public class MeetingActions {
         }
 
         if (game.getNominatedPlayers().isEmpty()) {
+            killMostVotedPlayer(game);
             game.setDay(game.getDay() + 1);
             NightActions.nextNight(game);
             return;
@@ -112,6 +114,30 @@ public class MeetingActions {
             }
             
         }.runTaskTimer(game.getPlugin(), 0, Math.round(game.getPlugin().getServer().getServerTickManager().getTickRate()));
+    }
+
+    public static void killMostVotedPlayer(Game game) {
+        Map<GamePlayer, Integer> votes = game.getPlayersVotes();
+        GamePlayer mostVoted = null;
+        GamePlayer mostVotedEqually = null;
+
+        for (GamePlayer player : votes.keySet()) {
+            if (mostVoted == null) {
+                mostVoted = player;
+            } else {
+                if (votes.get(mostVoted) < votes.get(player)) {
+                    mostVoted = player;
+                    mostVotedEqually = null;
+                } else if (votes.get(mostVoted) == votes.get(player)) {
+                    mostVotedEqually = player;
+                }
+            }
+        }
+
+        if (mostVoted != null && mostVotedEqually == null 
+        && votes.get(mostVoted) >= Math.ceil((double) game.getAlivePlayersCount() / 2.0)) {
+            mostVoted.setDead(true);
+        }
     }
     
 }

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -64,6 +65,11 @@ public class Poisoner extends Role {
                         selectedPlayer.setPoisoned(true);
                         game.setLastPoisoned(selectedPlayer);
                         game.setSelectedPlayer(null);
+                    }
+
+                    // If the player closed the inventory, we reopen it
+                    if (player.getPlayer().getOpenInventory().getType() == InventoryType.CRAFTING) {
+                        player.getPlayer().openInventory(playerSelectInventory);
                     }
                     
                     NightActions.processNextNightAction(game);

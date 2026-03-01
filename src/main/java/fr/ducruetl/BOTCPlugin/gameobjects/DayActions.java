@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class DayActions {
@@ -22,6 +23,9 @@ public class DayActions {
                 ChatColor.YELLOW + "" + ChatColor.BOLD + game.getLastKilledByImp().getPlayer().getDisplayName()
                 + ChatColor.RESET + ChatColor.RED + " a été tué durant la nuit"
             );
+
+            Player killedPlayer = game.getLastKilledByImp().getPlayer();
+            killedPlayer.getWorld().strikeLightning(killedPlayer.getLocation());
             game.setLastKilledByImp(null);
         } else {
             Bukkit.broadcastMessage(ChatColor.BLUE + "Personne n'est mort cette nuit");

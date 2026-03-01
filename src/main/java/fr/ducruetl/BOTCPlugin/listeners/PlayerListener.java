@@ -87,7 +87,7 @@ public class PlayerListener implements Listener {
         RayTraceResult result = player.getWorld().rayTraceEntities(
             player.getEyeLocation(),
             player.getEyeLocation().getDirection(),
-            10.0, // range
+            16.0, // range
             entity -> entity instanceof Player && entity != player
         );
 
@@ -99,6 +99,11 @@ public class PlayerListener implements Listener {
         GamePlayer clickedGamePlayer = plugin.getGame().getPlayersToGamePlayers().get(clickedPlayer);
         if (clickedGamePlayer.isDead()) {
             event.getPlayer().sendMessage(ChatColor.RED + "Ce joueur est déjà mort.");
+            return;
+        }
+
+        if (plugin.getGame().getNominatedPlayers().contains(clickedGamePlayer)) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Ce joueur est déjà nommé.");
             return;
         }
         
