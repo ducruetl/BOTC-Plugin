@@ -1,4 +1,4 @@
-package fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown;
+package fr.ducruetl.BOTCPlugin.gameobjects.roles.townsfolks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;

@@ -13,7 +13,7 @@ import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
 import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
 import fr.ducruetl.BOTCPlugin.gameobjects.Team;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
-import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Soldier;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.townsfolks.Soldier;
 
 public class Imp extends Role {
 

@@ -1,4 +1,4 @@
-package fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown;
+package fr.ducruetl.BOTCPlugin.gameobjects.roles.townsfolks;
 
 import fr.ducruetl.BOTCPlugin.gameobjects.Team;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
