@@ -24,6 +24,8 @@ public class GamePlayer {
     private boolean hasVotedAfterDeath;
 
     private boolean hasUsedSlayerPower;
+    
+    private boolean hasVoted;
 
     public GamePlayer(Player player) {
         this.player = player;
@@ -35,6 +37,7 @@ public class GamePlayer {
         this.isProtected = false;
         this.hasVotedAfterDeath = false;
         this.hasUsedSlayerPower = false;
+        this.hasVoted = false;
     }
 
     public Player getPlayer() {
@@ -97,7 +100,7 @@ public class GamePlayer {
         this.isProtected = isProtected;
     }
 
-    public boolean isHasVotedAfterDeath() {
+    public boolean getHasVotedAfterDeath() {
         return hasVotedAfterDeath;
     }
 
@@ -105,12 +108,20 @@ public class GamePlayer {
         this.hasVotedAfterDeath = hasVotedAfterDeath;
     }
 
-    public boolean isHasUsedSlayerPower() {
+    public boolean getHasUsedSlayerPower() {
         return hasUsedSlayerPower;
     }
 
     public void setHasUsedSlayerPower(boolean hasUsedSlayerPower) {
         this.hasUsedSlayerPower = hasUsedSlayerPower;
+    }
+
+    public boolean getHasVoted() {
+        return hasVoted;
+    }
+
+    public void setHasVoted(boolean hasVoted) {
+        this.hasVoted = hasVoted;
     }
 
     public boolean isSeenAsDemon() {

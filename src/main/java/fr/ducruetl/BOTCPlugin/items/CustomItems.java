@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import fr.ducruetl.BOTCPlugin.BOTCPlugin;
 import fr.ducruetl.BOTCPlugin.gameobjects.Game;
 import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Butler;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
 
 import org.bukkit.ChatColor;
@@ -157,10 +158,20 @@ public class CustomItems {
             // Vote for current nominated player
             event.setCancelled(true);
             GamePlayer voteTarget = plugin.getGame().getNominatedPlayers().getFirst();
+
+            GamePlayer gamePlayer = plugin.getGame().getPlayersToGamePlayers().get(player);
+            if (gamePlayer.getRole() instanceof Butler butler) {
+                if (!butler.getMaster().getHasVoted()) {
+                    player.sendMessage(ChatColor.RED + "Votre maître n'a pas encore voté.");
+                    return;
+                }
+            }
+
             player.getInventory().remove(getVoteToken());
             plugin.getGame().getPlayersVotes().put(voteTarget, plugin.getGame().getPlayersVotes().get(voteTarget) + 1);
 
-            GamePlayer gamePlayer = plugin.getGame().getPlayersToGamePlayers().get(player);
+            gamePlayer.setHasVoted(true);
+
             if (gamePlayer.isDead()) {
                 gamePlayer.setHasVotedAfterDeath(true);
             }

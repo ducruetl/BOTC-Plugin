@@ -80,7 +80,7 @@ public class MeetingActions {
         }
 
         for (GamePlayer player : game.getPlayers()) {
-            if (player.isDead() && player.isHasVotedAfterDeath()) {
+            if (player.isDead() && player.getHasVotedAfterDeath()) {
                 continue;
             }
 
@@ -170,6 +170,10 @@ public class MeetingActions {
                 ChatColor.YELLOW + "" + ChatColor.BOLD + mostVoted.getPlayer().getDisplayName() +
                 ChatColor.RESET + ChatColor.BLUE + " a été éliminé par les citoyens."
             );
+        }
+
+        for (GamePlayer player : game.getPlayers()) {
+            player.setHasVoted(false);
         }
     }
     
