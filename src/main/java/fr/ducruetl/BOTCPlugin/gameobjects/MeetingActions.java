@@ -58,6 +58,11 @@ public class MeetingActions {
         }.runTaskTimer(game.getPlugin(), 0, Math.round(game.getPlugin().getServer().getServerTickManager().getTickRate()));
     }
 
+    /**
+     * Start the vote for the next player in nominated players list,
+     * if there are no more nominated players, go to the next game state
+     * @param game The related Game object
+     */
     public static void nextVote(Game game) {
         game.setState(GameState.VOTE);
 
@@ -116,6 +121,10 @@ public class MeetingActions {
         }.runTaskTimer(game.getPlugin(), 0, Math.round(game.getPlugin().getServer().getServerTickManager().getTickRate()));
     }
 
+    /**
+     * Kill a player or not, based on the votes and the alive players count
+     * @param game The related Game object
+     */
     public static void killMostVotedPlayer(Game game) {
         Map<GamePlayer, Integer> votes = game.getPlayersVotes();
         GamePlayer mostVoted = null;
@@ -134,9 +143,31 @@ public class MeetingActions {
             }
         }
 
-        if (mostVoted != null && mostVotedEqually == null 
+        if (mostVoted == null 
+        || votes.get(mostVoted) < Math.ceil((double) game.getAlivePlayersCount() / 2.0)) {
+            Bukkit.broadcastMessage(ChatColor.BLUE + "Personne n'est mort durant ce vote.");
+            return;
+        }
+
+        if (mostVoted != null && mostVotedEqually != null) {
+            Bukkit.broadcastMessage(
+                ChatColor.BLUE + "Il y a eu une égalité entre "
+                + ChatColor.YELLOW + "" + ChatColor.BOLD + mostVoted.getPlayer().getDisplayName()
+                + ChatColor.RESET + ChatColor.BLUE + " et "
+                + ChatColor.YELLOW + "" + ChatColor.BOLD + mostVotedEqually.getPlayer().getDisplayName()
+                + ChatColor.RESET + ChatColor.BLUE + ". Personne ne meurt."
+            );
+            return;
+        }
+
+        if (mostVoted != null 
+        && mostVotedEqually == null 
         && votes.get(mostVoted) >= Math.ceil((double) game.getAlivePlayersCount() / 2.0)) {
             mostVoted.setDead(true);
+            Bukkit.broadcastMessage(
+                ChatColor.YELLOW + "" + ChatColor.BOLD + mostVoted.getPlayer().getDisplayName() +
+                ChatColor.RESET + ChatColor.BLUE + " a été éliminé par les citoyens."
+            );
         }
     }
     

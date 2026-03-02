@@ -164,6 +164,12 @@ public class CustomItems {
             if (gamePlayer.isDead()) {
                 gamePlayer.setHasVotedAfterDeath(true);
             }
+
+            Bukkit.broadcastMessage(
+                ChatColor.YELLOW + "" + ChatColor.BOLD + player.getDisplayName()
+                + ChatColor.RESET + ChatColor.BLUE + " a voté pour "
+                + ChatColor.YELLOW + "" + ChatColor.BOLD + voteTarget.getPlayer().getDisplayName()
+            );
         }
     }
 

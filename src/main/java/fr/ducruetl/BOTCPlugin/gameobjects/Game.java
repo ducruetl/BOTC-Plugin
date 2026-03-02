@@ -396,6 +396,10 @@ public class Game {
         }
     }
 
+    /**
+     * Create an inventory with an head for each player.
+     * @return The created inventory
+     */
     public Inventory createTargetSelectionInventory() {
         int size = ((getPlayers().size() - 1) / 9 + 1) * 9; // multiple of 9
         Inventory inv = Bukkit.createInventory(null, size, "Choose a player");

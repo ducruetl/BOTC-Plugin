@@ -1,6 +1,7 @@
 package fr.ducruetl.BOTCPlugin;
 
 import org.bukkit.Difficulty;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -64,12 +65,14 @@ public final class BOTCPlugin extends JavaPlugin {
     }
 
     /**
-     * Disable PvP, change difficulty to peaceful and change spawn location for all worlds
+     * Disable PvP, change difficulty to peaceful, disable fire spread 
+     * and change spawn location for all worlds
      */
     public void setWorldsOptions() {
         for (World world : getServer().getWorlds()) {
             world.setDifficulty(Difficulty.PEACEFUL);
             world.setPVP(false);
+            world.setGameRule(GameRule.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
             world.setSpawnLocation(0, world.getHighestBlockYAt(0, 0) + 1, 0);
         }
     }
