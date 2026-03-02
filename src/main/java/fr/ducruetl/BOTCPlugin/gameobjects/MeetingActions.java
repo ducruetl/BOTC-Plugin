@@ -65,6 +65,7 @@ public class MeetingActions {
      */
     public static void nextVote(Game game) {
         game.setState(GameState.VOTE);
+        game.setLastKilledByVote(null);
 
         for (GamePlayer player : game.getPlayers()) {
             player.getPlayer().getInventory().remove(CustomItems.getNominationItem());
@@ -164,6 +165,7 @@ public class MeetingActions {
         && mostVotedEqually == null 
         && votes.get(mostVoted) >= Math.ceil((double) game.getAlivePlayersCount() / 2.0)) {
             mostVoted.setDead(true);
+            game.setLastKilledByVote(mostVoted);
             Bukkit.broadcastMessage(
                 ChatColor.YELLOW + "" + ChatColor.BOLD + mostVoted.getPlayer().getDisplayName() +
                 ChatColor.RESET + ChatColor.BLUE + " a été éliminé par les citoyens."

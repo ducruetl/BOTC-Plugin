@@ -93,7 +93,7 @@ public class Game {
         new Recluse()
     ));
 
-    private List<Role> folkstownPool = new ArrayList<>(List.of(
+    private List<Role> townsfolksPool = new ArrayList<>(List.of(
         new Chef(),
         new Empath(),
         new FortuneTeller(),
@@ -244,6 +244,18 @@ public class Game {
         this.lastProtected = lastProtected;
     }
 
+    public List<Role> getTownsfolksPool() {
+        return townsfolksPool;
+    }
+
+    public List<Role> getMinionPool() {
+        return minionPool;
+    }
+
+    public List<Role> getOutsidersPool() {
+        return outsidersPool;
+    }
+
     /**
      * If there are enough players online (5 minimum), start the game
      */
@@ -279,7 +291,7 @@ public class Game {
      * Calculate the number of folkstown roles that should be present in composition, based on the number of players
      * @return The suggested number of folkstown roles based on the number of players
      */
-    public int getFolkstownCount() {
+    public int getTownsfolksCount() {
         int playersCount = getPlayers().size();
 
         return playersCount - 1 - getOutsidersCount() - getMinionsCount();
@@ -311,7 +323,7 @@ public class Game {
     public void attributeRoles() {
         Collections.shuffle(minionPool);
         Collections.shuffle(outsidersPool);
-        Collections.shuffle(folkstownPool);
+        Collections.shuffle(townsfolksPool);
 
         getComposition().add(new Imp());
 
@@ -331,12 +343,12 @@ public class Game {
             getOutOfComposition().add(outsidersPool.get(i));
         }
 
-        for (int i = 0; i < getFolkstownCount(); i++) {
-            getComposition().add(folkstownPool.get(i));
+        for (int i = 0; i < getTownsfolksCount(); i++) {
+            getComposition().add(townsfolksPool.get(i));
         }
 
-        for (int i = getFolkstownCount(); i < folkstownPool.size(); i++) {
-            getOutOfComposition().add(folkstownPool.get(i));
+        for (int i = getTownsfolksCount(); i < townsfolksPool.size(); i++) {
+            getOutOfComposition().add(townsfolksPool.get(i));
         }
 
         Collections.shuffle(getComposition());
@@ -367,13 +379,23 @@ public class Game {
      * @param player The player to send a message
      */
     public void sendRoleMessage(GamePlayer player) {
+        String color;
+
+        if (player.getRole().getTeam() == Team.TOWNSFOLK) {
+            color = ChatColor.GREEN + "" + ChatColor.BOLD;
+        } else if (player.getRole().getTeam() == Team.OUTSIDER) {
+            color = ChatColor.AQUA + "" + ChatColor.BOLD;
+        } else {
+            color = ChatColor.RED + "" + ChatColor.BOLD;
+        }
+
         String roleName = player.getRole() instanceof Drunk ? player.getFacadeRole().getName() : player.getRole().getName();
         String roleDesc = player.getRole() instanceof Drunk ? player.getFacadeRole().getDescription() : player.getRole().getDescription();
 
-        player.getPlayer().sendTitle(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + roleName, null, 20, 80, 20);
+        player.getPlayer().sendTitle(ChatColor.BLUE + "Vous êtes " + color + roleName, null, 20, 80, 20);
 
         player.getPlayer().sendMessage("");
-        player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + ChatColor.YELLOW + "" + ChatColor.BOLD + roleName);
+        player.getPlayer().sendMessage(ChatColor.BLUE + "Vous êtes " + color + roleName);
         
         if (player.getRole().getTeam() == Team.DEMON 
                 || player.getRole().getTeam() == Team.MINION) {

@@ -1,4 +1,4 @@
-package fr.ducruetl.BOTCPlugin.gameobjects.roles.demons;
+package fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown;
 
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -13,27 +13,25 @@ import fr.ducruetl.BOTCPlugin.gameobjects.GamePlayer;
 import fr.ducruetl.BOTCPlugin.gameobjects.NightActions;
 import fr.ducruetl.BOTCPlugin.gameobjects.Team;
 import fr.ducruetl.BOTCPlugin.gameobjects.roles.Role;
-import fr.ducruetl.BOTCPlugin.gameobjects.roles.folkstown.Soldier;
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
 
-public class Imp extends Role {
+public class Monk extends Role {
 
-    public Imp() {
+    public Monk() {
         super(
-            "Diablotin", 
-            "Chaque nuit, tu choisi une cible à éliminer, " 
-            + "tu peut te choisir toi-même, ce qui aura pour " 
-            + "conséquence de te tuer et de transférer ton "
-            + "rôle de diablotin à un de tes sbires démons. "
-            + "Si tu meurt lors du vote du village, les Citoyens "
-            + "gagnent (sauf si il y a une Femme Ecarlate).", 
-            Team.DEMON,
-            3
+            "Prêtre",
+            "Chaque nuit, tu peut choisir une personne à défendre contre l'attaque du diablotin.",
+            Team.TOWNSFOLK,
+            2
         );
     }
 
     @Override
     public void onNightTurn(Game game, GamePlayer player) {
-        game.setLastKilledByImp(null);
+        if (game.getLastProtected() != null) {
+            game.getLastProtected().setProtected(false);
+            game.setLastProtected(null);
+        }
 
         Inventory playerSelectInventory = game.createTargetSelectionInventory();
         player.getPlayer().closeInventory();
@@ -63,10 +61,10 @@ public class Imp extends Role {
 
                     GamePlayer selectedPlayer = game.getSelectedPlayer();
                     if (selectedPlayer != null 
-                        && !((selectedPlayer.getRole() instanceof Soldier) && !selectedPlayer.isPoisoned())
-                        && (!(selectedPlayer.isProtected()))) {
-                        selectedPlayer.setDead(true);
-                        game.setLastKilledByImp(selectedPlayer);
+                        && !player.isPoisoned()
+                        && !(player.getRole() instanceof Drunk)) {
+                        selectedPlayer.setProtected(true);
+                        game.setLastProtected(selectedPlayer);
                     }
                     
                     game.setSelectedPlayer(null);
@@ -83,4 +81,5 @@ public class Imp extends Role {
             }
         }.runTaskTimer(game.getPlugin(), 0, Math.round(Bukkit.getServerTickManager().getTickRate()));
     }
+    
 }

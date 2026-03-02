@@ -112,5 +112,32 @@ public class GamePlayer {
     public void setHasUsedSlayerPower(boolean hasUsedSlayerPower) {
         this.hasUsedSlayerPower = hasUsedSlayerPower;
     }
+
+    public boolean isSeenAsDemon() {
+        if (getFacadeTeam() != null
+        && (getFacadeTeam() == Team.DEMON
+        || getFacadeTeam() == Team.MINION)) {
+            return true;
+        }
+
+        if (getRole().getTeam() == Team.DEMON
+        || getRole().getTeam() == Team.MINION) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isSeenAsImp() {
+        if (getFacadeTeam() != null && getFacadeTeam() == Team.DEMON) {
+            return true;
+        }
+
+        if (getRole().getTeam() == Team.DEMON) {
+            return true;
+        }
+
+        return false;
+    }
     
 }
