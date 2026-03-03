@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import fr.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
+
 public class NightActions {
 
     /**
@@ -39,6 +41,11 @@ public class NightActions {
 
         game.setCurrentNightActor(game.getNightOrder().poll());
         Bukkit.getLogger().info("Au tour de " + game.getCurrentNightActor().getPlayer().getDisplayName());
-        game.getCurrentNightActor().getRole().onNightTurn(game, game.getCurrentNightActor());
+
+        if (game.getCurrentNightActor().getRole() instanceof Drunk) {
+            game.getCurrentNightActor().getFacadeRole().onNightTurn(game, game.getCurrentNightActor());
+        } else {
+            game.getCurrentNightActor().getRole().onNightTurn(game, game.getCurrentNightActor());
+        }    
     }
 }
