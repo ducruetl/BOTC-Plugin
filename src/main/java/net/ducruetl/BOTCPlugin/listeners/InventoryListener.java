@@ -30,7 +30,7 @@ public class InventoryListener implements Listener {
 
         if (plugin.getGame() != null
                 && !plugin.getGame().getState().equals(GameState.NOT_STARTED)
-                && event.getView().title().equals("Choose a player")) {
+                && event.getView().title().toString().equals("Choose a player")) {
             if (item.getType().equals(Material.PLAYER_HEAD)
                     && item.hasItemMeta()) {
                 event.setCancelled(true);
