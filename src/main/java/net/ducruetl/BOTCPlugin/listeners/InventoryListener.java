@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import net.ducruetl.BOTCPlugin.BOTCPlugin;
 import net.ducruetl.BOTCPlugin.gameobjects.GameState;
 import net.ducruetl.BOTCPlugin.items.CustomItems;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class InventoryListener implements Listener {
 
@@ -30,7 +31,7 @@ public class InventoryListener implements Listener {
 
         if (plugin.getGame() != null
                 && !plugin.getGame().getState().equals(GameState.NOT_STARTED)
-                && event.getView().title().toString().equals("Choose a player")) {
+                && MiniMessage.miniMessage().serialize(event.getView().title()).equals("Choose a player")) {
             if (item.getType().equals(Material.PLAYER_HEAD)
                     && item.hasItemMeta()) {
                 event.setCancelled(true);
