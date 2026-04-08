@@ -1,6 +1,7 @@
 name: BOTC-Plugin
+author: Léo Ducruet
 version: '1.0-SNAPSHOT'
-main: fr.ducruetl.BOTCPlugin.BOTCPlugin
+main: net.ducruetl.BOTCPlugin.BOTCPlugin
 api-version: '1.21'
 commands:
   nametags:
