@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        GamePlayer clickedGamePlayer = plugin.getGame().getPlayersToGamePlayers().get(clickedPlayer);
+        GamePlayer clickedGamePlayer = plugin.getGame().getUuidToGamePlayers().get(clickedPlayer.getUniqueId());
         if (clickedGamePlayer.isDead()) {
             event.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<red>Ce joueur est déjà mort.</red>"));
             return;

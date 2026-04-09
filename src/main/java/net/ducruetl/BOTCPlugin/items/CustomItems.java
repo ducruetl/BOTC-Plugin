@@ -174,7 +174,7 @@ public class CustomItems {
             event.setCancelled(true);
             GamePlayer voteTarget = plugin.getGame().getNominatedPlayers().getFirst();
 
-            GamePlayer gamePlayer = plugin.getGame().getPlayersToGamePlayers().get(player);
+            GamePlayer gamePlayer = plugin.getGame().getUuidToGamePlayers().get(player.getUniqueId());
             if (gamePlayer.getRole() instanceof Butler butler) {
                 if (!butler.getMaster().getHasVoted()) {
                     final Component message = MiniMessage.miniMessage().deserialize("<red>Votre maître n'a pas encore voté</red>");

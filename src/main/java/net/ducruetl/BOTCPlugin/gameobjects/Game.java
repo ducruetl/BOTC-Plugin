@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public class Game {
     
     private ArrayList<GamePlayer> players;
 
-    private Map<Player, GamePlayer> playersToGamePlayers;
+    private Map<UUID, GamePlayer> uuidToGamePlayers;
 
     private ArrayList<GamePlayer> nominatedPlayers;
 
@@ -115,7 +116,7 @@ public class Game {
     public Game(BOTCPlugin plugin) {
         this.plugin = plugin;
         this.players = new ArrayList<>();
-        this.playersToGamePlayers = new HashMap<>();
+        this.uuidToGamePlayers = new HashMap<>();
         this.nominatedPlayers = new ArrayList<>();
         this.playersVotes = new HashMap<>();
         this.nightOrder = new PriorityQueue<>(
@@ -155,8 +156,8 @@ public class Game {
         return count;
     }
 
-    public Map<Player, GamePlayer> getPlayersToGamePlayers() {
-        return playersToGamePlayers;
+    public Map<UUID, GamePlayer> getUuidToGamePlayers() {
+        return uuidToGamePlayers;
     }
 
     public ArrayList<GamePlayer> getNominatedPlayers() {
@@ -276,7 +277,7 @@ public class Game {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             GamePlayer gamePlayer = new GamePlayer(player);
             getPlayers().add(gamePlayer);
-            getPlayersToGamePlayers().put(player, gamePlayer);
+            getUuidToGamePlayers().put(player.getUniqueId(), gamePlayer);
         }
 
         final Component message = MiniMessage.miniMessage().deserialize("<yellow><bold>Début de la partie !</bold></yellow>");

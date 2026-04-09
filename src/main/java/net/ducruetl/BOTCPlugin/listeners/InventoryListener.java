@@ -38,7 +38,7 @@ public class InventoryListener implements Listener {
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 Player selectedPlayer = meta.getOwningPlayer().getPlayer();
                 plugin.getGame().setSelectedPlayer(
-                    plugin.getGame().getPlayersToGamePlayers().get(selectedPlayer)
+                    plugin.getGame().getUuidToGamePlayers().get(selectedPlayer.getUniqueId())
                 );
                 return;
             }
