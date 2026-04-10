@@ -20,14 +20,14 @@ public class NametagCommand implements CommandExecutor {
 
      @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.contentEquals("nametags")) {
+        if (label.equals("nametags")) {
             if (args.length != 1) {
                 return false;
             }
 
-            if (args[0].contentEquals("enable")) {
+            if (args[0].equals("enable")) {
                 enableNametags(plugin);
-            } else if (args[0].contentEquals("disable")) {
+            } else if (args[0].equals("disable")) {
                 disableNametags(plugin);
             } else {
                 return false;

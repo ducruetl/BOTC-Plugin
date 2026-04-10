@@ -1,7 +1,10 @@
 package net.ducruetl.BOTCPlugin;
 
+import java.util.ArrayList;
+
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +20,12 @@ public final class BOTCPlugin extends JavaPlugin {
     public static final String NAMETAG_TEAM_NAME = "hidenametag";
 
     private Game game;
+
+    // Positions of the rooms where players are during the night
+    public ArrayList<Location> roomPositions = new ArrayList<>();
+
+    // Positions of the seat where players are during the meeting
+    public ArrayList<Location> seatPositions = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -51,6 +60,30 @@ public final class BOTCPlugin extends JavaPlugin {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public ArrayList<Location> getRoomPositions() {
+        return roomPositions;
+    }
+
+    public void addRoomPosition(Location position) {
+        roomPositions.add(position);
+    }
+
+    public void resetRoomPositions() {
+        roomPositions.clear();
+    }
+
+    public ArrayList<Location> getSeatPositions() {
+        return seatPositions;
+    }
+
+    public void addSeatPosition(Location position) {
+        seatPositions.add(position);
+    }
+
+    public void resetSeatPositions() {
+        seatPositions.clear();
     }
 
     /**

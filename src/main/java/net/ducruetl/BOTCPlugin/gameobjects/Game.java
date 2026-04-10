@@ -272,6 +272,22 @@ public class Game {
 
             Bukkit.broadcast(message);
             return;
+        } else if (plugin.getRoomPositions().size() < Bukkit.getServer().getOnlinePlayers().size()) {
+            final Component message = MiniMessage.miniMessage().deserialize(
+                "<red>Il n'y a pas assez de rooms pour accueillir tous les joueurs (<num> rooms manquantes)</red>",
+                Placeholder.unparsed("num", String.valueOf(Bukkit.getOnlinePlayers().size() - plugin.getRoomPositions().size()))
+            );
+
+            Bukkit.broadcast(message);
+            return;
+        } else if (plugin.getSeatPositions().size() < Bukkit.getServer().getOnlinePlayers().size()) {
+            final Component message = MiniMessage.miniMessage().deserialize(
+                "<red>Il n'y a pas assez de seats pour accueillir tous les joueurs (<num> seats manquantes)</red>",
+                Placeholder.unparsed("num", String.valueOf(Bukkit.getOnlinePlayers().size() - plugin.getSeatPositions().size()))
+            );
+
+            Bukkit.broadcast(message);
+            return;
         }
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {

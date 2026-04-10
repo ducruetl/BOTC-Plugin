@@ -1,5 +1,5 @@
 timers:
-  dayTimeDuration: 60
-  meetingTimeDuration: 60
-  nightTimeDuration: 10
-  voteTimeDuration: 10
+  dayTimeDuration: 180
+  meetingTimeDuration: 120
+  nightTimeDuration: 20
+  voteTimeDuration: 15

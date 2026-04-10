@@ -1,12 +1,20 @@
 package net.ducruetl.BOTCPlugin.gameobjects;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.ducruetl.BOTCPlugin.BOTCPlugin;
 import net.ducruetl.BOTCPlugin.items.CustomItems;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBar.Color;
@@ -77,6 +85,61 @@ public class MeetingActions {
     }
 
     /**
+     * Teleport players to their seats
+     * @param game Game instance
+     */
+    public static void teleportPlayersToSeats(Game game) {
+        BOTCPlugin plugin = JavaPlugin.getPlugin(BOTCPlugin.class);
+
+        List<CompletableFuture<ArmorStand>> futures = new ArrayList<>();
+
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            Player player = game.getPlayers().get(i).getPlayer();
+            Location location = plugin.getSeatPositions().get(i);
+
+            futures.add(createSeatAsync(plugin, location, player));
+        }
+
+        CompletableFuture
+            .allOf(futures.toArray(new CompletableFuture[0]))
+            .thenRun(() -> NightActions.processNextNightAction(game));
+    }
+
+    private static CompletableFuture<ArmorStand> createSeatAsync(
+            JavaPlugin plugin,
+            Location loc,
+            Player player
+    ) {
+
+        CompletableFuture<ArmorStand> future = new CompletableFuture<>();
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+
+            ArmorStand stand = loc.getWorld().spawn(loc, ArmorStand.class);
+
+            stand.setInvisible(true);
+            stand.setGravity(false);
+            stand.setMarker(true);
+            stand.setInvulnerable(true);
+
+            stand.addPassenger(player);
+
+            future.complete(stand);
+
+        });
+
+        return future;
+    }
+
+    private static void destroySeat(Player player) {
+        Entity seat = player.getVehicle();
+
+        if (seat == null) return;
+
+        seat.remove();
+    }
+
+    /**
      * Start the vote for the next player in nominated players list,
      * if there are no more nominated players, go to the next game state
      * @param game The related Game object
@@ -93,6 +156,11 @@ public class MeetingActions {
         if (game.getNominatedPlayers().isEmpty()) {
             killMostVotedPlayer(game);
             game.setDay(game.getDay() + 1);
+
+            for (GamePlayer gamePlayer : game.getPlayers()) {
+                destroySeat(gamePlayer.getPlayer());
+            }
+
             NightActions.nextNight(game);
             return;
         }

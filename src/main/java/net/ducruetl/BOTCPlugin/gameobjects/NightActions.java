@@ -1,9 +1,17 @@
 package net.ducruetl.BOTCPlugin.gameobjects;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.ducruetl.BOTCPlugin.BOTCPlugin;
 import net.ducruetl.BOTCPlugin.gameobjects.roles.outsiders.Drunk;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -27,7 +35,29 @@ public class NightActions {
             game.getNightOrder().add(player);
         }
 
-        NightActions.processNextNightAction(game);
+        NightActions.teleportPlayersToRooms(game);
+    }
+
+    /**
+     * Teleport players to their room
+     * @param game Game instance
+     */
+    public static void teleportPlayersToRooms(Game game) {
+        BOTCPlugin plugin = JavaPlugin.getPlugin(BOTCPlugin.class);
+
+        List<CompletableFuture<Boolean>> futures = new ArrayList<>();
+
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            Player player = game.getPlayers().get(i).getPlayer();
+            Location location = plugin.getRoomPositions().get(i);
+
+            futures.add(player.teleportAsync(location));
+        }
+
+        // Wait for all tp before starting night actions
+        CompletableFuture
+            .allOf(futures.toArray(new CompletableFuture[0]))
+            .thenRun(() -> NightActions.processNextNightAction(game));
     }
 
     /**
