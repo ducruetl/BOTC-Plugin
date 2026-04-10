@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -124,5 +125,11 @@ public class PlayerListener implements Listener {
         plugin.getServer().broadcast(message);
         plugin.getGame().getNominatedPlayers().add(clickedGamePlayer);
         event.getPlayer().getInventory().remove(CustomItems.getNominationItem());
+    }
+
+    public void onPlayerLeaveVehicle(EntityDismountEvent event) {
+        if (plugin.getGame().getState() == GameState.MEETING) {
+            event.setCancelled(true);
+        }
     }
 }

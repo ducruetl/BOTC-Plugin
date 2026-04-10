@@ -9,8 +9,16 @@ commands:
     usage: "Usage: /nametags <enable|disable>"
     permission: botc.nametags
     permission-message: "You do not have permission to use this command."
+  botc:
+    description: BOTC Commands
+    usage: "Usage: /botc <add|reset> <room|seat>"
+    permission: botc
+    permission-message: "You do not have permission to use this command."
 
 permissions:
+  botc:
+    description: Allows use of BOTC related commands
+    default: op
   botc.nametags:
     description: Allows use of /nametags
     default: op

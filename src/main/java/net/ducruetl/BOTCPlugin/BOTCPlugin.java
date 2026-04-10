@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 
 import net.ducruetl.BOTCPlugin.commands.NametagCommand;
+import net.ducruetl.BOTCPlugin.commands.PositionsCommands;
 import net.ducruetl.BOTCPlugin.gameobjects.Game;
 import net.ducruetl.BOTCPlugin.listeners.InventoryListener;
 import net.ducruetl.BOTCPlugin.listeners.PlayerListener;
@@ -46,6 +47,7 @@ public final class BOTCPlugin extends JavaPlugin {
         
         // Register commands executors
         getCommand("nametags").setExecutor(new NametagCommand(this));
+        getCommand("botc").setExecutor(new PositionsCommands(this));
     }
 
     @Override
